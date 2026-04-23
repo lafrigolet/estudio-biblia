@@ -318,8 +318,72 @@
 
 <footer class="max-w-7xl mx-auto px-4 sm:px-6 py-6 text-center text-xs font-sans text-ink-400 dark:text-parchment-400">
   <span class="ornament"></span>
-  Textos bíblicos de la <em>Traducción del Nuevo Mundo</em>.
+  <p>Textos bíblicos de la <em>Traducción del Nuevo Mundo</em>.</p>
+  <p class="mt-2">
+    <button id="openPrivacy" type="button" class="underline hover:text-parchment-600 dark:hover:text-parchment-300 transition-colors">
+      Aviso de privacidad
+    </button>
+  </p>
 </footer>
+
+<!-- Privacy modal -->
+<div id="privacyModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+  <div id="privacyBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+  <div id="privacyCard" class="relative max-w-lg w-full max-h-[85vh] overflow-y-auto bg-parchment-50 dark:bg-ink-800 rounded-xl shadow-2xl border border-parchment-200 dark:border-ink-700 p-6 sm:p-8 opacity-0 scale-95 transition-all duration-300">
+    <button id="privacyClose" class="absolute top-3 right-3 p-1.5 rounded-full hover:bg-parchment-100 dark:hover:bg-ink-700 text-ink-500 dark:text-parchment-300" aria-label="Cerrar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="text-center mb-4">
+      <div class="ornament"></div>
+      <h3 id="privacyTitle" class="font-serif text-2xl text-ink-700 dark:text-parchment-100">
+        Aviso de privacidad
+      </h3>
+    </div>
+
+    <div class="font-sans text-sm text-ink-600 dark:text-parchment-200 space-y-4 leading-relaxed">
+      <p>Esta aplicación <strong>no recoge datos personales</strong>, no utiliza cookies, no muestra publicidad y no emplea herramientas de análisis o seguimiento.</p>
+
+      <div>
+        <h4 class="font-serif text-base text-ink-700 dark:text-parchment-100 mb-1">Almacenamiento local</h4>
+        <p>Para que la aplicación recuerde sus preferencias, se guarda en el <em>almacenamiento local</em> de su navegador (<code class="text-xs bg-parchment-100 dark:bg-ink-900 px-1 rounded">localStorage</code>):</p>
+        <ul class="list-disc list-inside mt-2 space-y-0.5 text-ink-500 dark:text-parchment-300">
+          <li>El tema elegido (claro u oscuro).</li>
+          <li>Si ya se mostró el aviso de instalación.</li>
+        </ul>
+        <p class="mt-2">Esta información <strong>nunca sale</strong> de su dispositivo. Puede borrarla en cualquier momento vaciando los datos del sitio en su navegador.</p>
+      </div>
+
+      <div>
+        <h4 class="font-serif text-base text-ink-700 dark:text-parchment-100 mb-1">Caché para uso sin conexión</h4>
+        <p>Un <em>service worker</em> guarda copias de las lecciones en el dispositivo para que pueda leerlas sin conexión. Se almacenan únicamente en su navegador.</p>
+      </div>
+
+      <div>
+        <h4 class="font-serif text-base text-ink-700 dark:text-parchment-100 mb-1">Recursos de terceros</h4>
+        <p>La página carga estos recursos desde servidores externos, que al servirlos pueden registrar su dirección IP:</p>
+        <ul class="list-disc list-inside mt-2 space-y-0.5 text-ink-500 dark:text-parchment-300">
+          <li><strong>Google Fonts</strong> (fuentes tipográficas).</li>
+          <li><strong>cdn.tailwindcss.com</strong> (estilos).</li>
+          <li><strong>cdn.jsdelivr.net</strong> (librería <em>marked</em> para procesar los textos).</li>
+        </ul>
+        <p class="mt-2">Estos proveedores tienen sus propias políticas de privacidad. Si prefiere no comunicarse con ellos, puede bloquearlos mediante extensiones del navegador.</p>
+      </div>
+
+      <div>
+        <h4 class="font-serif text-base text-ink-700 dark:text-parchment-100 mb-1">Alojamiento</h4>
+        <p>La aplicación se sirve desde <strong>GitHub Pages</strong>, que también puede registrar su dirección IP en sus propios registros de servidor.</p>
+      </div>
+    </div>
+
+    <button id="privacyOk" class="mt-6 w-full px-5 py-3 rounded-lg bg-parchment-600 hover:bg-parchment-700 text-parchment-50 font-sans font-medium transition-colors shadow-md">
+      Entendido
+    </button>
+  </div>
+</div>
 
 <!-- Install PWA modal -->
 <div id="installModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="installTitle">
@@ -872,6 +936,43 @@
         showModal();
       }
     }, 3000);
+  })();
+
+  // ============ PRIVACY MODAL ============
+  (function initPrivacyModal() {
+    const modal = document.getElementById('privacyModal');
+    const backdrop = document.getElementById('privacyBackdrop');
+    const card = document.getElementById('privacyCard');
+    const btnOpen = document.getElementById('openPrivacy');
+    const btnClose = document.getElementById('privacyClose');
+    const btnOk = document.getElementById('privacyOk');
+
+    function show() {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      requestAnimationFrame(() => {
+        backdrop.classList.replace('opacity-0', 'opacity-100');
+        card.classList.remove('opacity-0', 'scale-95');
+        card.classList.add('opacity-100', 'scale-100');
+      });
+    }
+    function hide() {
+      backdrop.classList.replace('opacity-100', 'opacity-0');
+      card.classList.add('opacity-0', 'scale-95');
+      card.classList.remove('opacity-100', 'scale-100');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 300);
+    }
+
+    btnOpen.addEventListener('click', show);
+    btnClose.addEventListener('click', hide);
+    btnOk.addEventListener('click', hide);
+    backdrop.addEventListener('click', hide);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) hide();
+    });
   })();
 </script>
 </body>
