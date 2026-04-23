@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disfrute de la vida para siempre — Estudio bíblico</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          parchment: {
+            50:  '#fdfaf0',
+            100: '#f7efd8',
+            200: '#ecdcb0',
+            300: '#dcc27f',
+            400: '#c5a150',
+            500: '#a88333',
+            600: '#8b6828',
+            700: '#6b4e1f',
+            800: '#4a3616',
+            900: '#2d2110',
+          },
+          ink: {
+            50:  '#f5f1ea',
+            100: '#ebe4d7',
+            200: '#ccc0a9',
+            300: '#a89a7e',
+            400: '#7a6f58',
+            500: '#524a3a',
+            600: '#3b3529',
+            700: '#2a2520',
+            800: '#1a1713',
+            900: '#100e0a',
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  :root { color-scheme: light dark; }
+
+  html, body { height: 100%; }
+  body {
+    background-color: #fdfaf0;
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(197, 161, 80, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 100%, rgba(139, 104, 40, 0.08) 0%, transparent 40%);
+  }
+  html.dark body {
+    background-color: #100e0a;
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(197, 161, 80, 0.06) 0%, transparent 40%),
+      radial-gradient(circle at 90% 100%, rgba(139, 104, 40, 0.08) 0%, transparent 40%);
+  }
+
+  /* Pretty scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(139, 104, 40, 0.3); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(139, 104, 40, 0.5); }
+
+  /* Bible-like prose styling for rendered markdown */
+  .prose-bible h2 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 2.25rem;
+    line-height: 1.15;
+    font-weight: 600;
+    text-align: center;
+    color: #6b4e1f;
+    margin: 0.5rem 0 0.25rem;
+    letter-spacing: 0.01em;
+  }
+  html.dark .prose-bible h2 { color: #dcc27f; }
+
+  .prose-bible h3 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #8b6828;
+    margin: 1.75rem 0 0.5rem;
+  }
+  html.dark .prose-bible h3 { color: #c5a150; }
+
+  /* First h3 (the lesson subtitle in italic quotes) styled centered */
+  .prose-bible > h2 + h3 {
+    text-align: center;
+    font-style: italic;
+    color: #8b6828;
+    margin-top: 0;
+    font-size: 1.4rem;
+    font-weight: 400;
+  }
+  html.dark .prose-bible > h2 + h3 { color: #c5a150; }
+
+  /* The list of references paragraph right under subtitle */
+  .prose-bible > h3 + p {
+    text-align: center;
+    font-style: italic;
+    color: #7a6f58;
+    font-size: 1.05rem;
+    margin: 0.5rem auto 1.5rem;
+    max-width: 44rem;
+    line-height: 1.7;
+  }
+  html.dark .prose-bible > h3 + p { color: #a89a7e; }
+
+  .prose-bible p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #2a2520;
+    margin: 0.75rem 0;
+  }
+  html.dark .prose-bible p { color: #ebe4d7; }
+
+  .prose-bible em {
+    color: #8b6828;
+    font-style: italic;
+  }
+  html.dark .prose-bible em { color: #c5a150; }
+
+  .prose-bible strong { color: #4a3616; font-weight: 600; }
+  html.dark .prose-bible strong { color: #f7efd8; }
+
+  .prose-bible blockquote {
+    border-left: 3px solid #a88333;
+    background: linear-gradient(to right, rgba(236, 220, 176, 0.25), transparent);
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    border-radius: 0 0.5rem 0.5rem 0;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.2rem;
+    line-height: 1.75;
+    color: #2a2520;
+  }
+  html.dark .prose-bible blockquote {
+    background: linear-gradient(to right, rgba(197, 161, 80, 0.12), transparent);
+    color: #ebe4d7;
+    border-left-color: #c5a150;
+  }
+  .prose-bible blockquote p { font-size: 1.2rem; margin: 0; color: inherit; }
+
+  .prose-bible hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent 10%, #a88333 50%, transparent 90%);
+    margin: 2rem auto;
+    width: 80%;
+    opacity: 0.55;
+  }
+  html.dark .prose-bible hr {
+    background: linear-gradient(to right, transparent 10%, #c5a150 50%, transparent 90%);
+    opacity: 0.4;
+  }
+
+  .prose-bible ul { margin: 0.75rem 0 0.75rem 1.5rem; list-style: disc; }
+  .prose-bible ol { margin: 0.75rem 0 0.75rem 1.5rem; list-style: decimal; }
+
+  /* Sidebar lesson items animation */
+  .section-lessons {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.2s ease;
+  }
+
+  /* Subtle entry animation for lesson content */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .content-enter { animation: fadeUp 0.35s ease both; }
+
+  /* Ornament under header */
+  .ornament::after {
+    content: '❦';
+    display: block;
+    text-align: center;
+    color: #a88333;
+    margin: 0.25rem 0 0.5rem;
+    font-size: 1.1rem;
+  }
+  html.dark .ornament::after { color: #c5a150; }
+
+  /* Mobile sidebar overlay */
+  .sidebar-backdrop { transition: opacity 0.25s ease; }
+
+  /* Focus styles */
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid #a88333;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+</style>
+</head>
+
+<body class="font-serif text-ink-700 dark:text-parchment-100 antialiased">
+
+<!-- Header -->
+<header class="sticky top-0 z-30 bg-parchment-50/85 dark:bg-ink-900/85 backdrop-blur border-b border-parchment-200/70 dark:border-ink-700/70">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
+    <button id="menuToggle" class="lg:hidden p-2 rounded hover:bg-parchment-100 dark:hover:bg-ink-700" aria-label="Abrir menú">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+    </button>
+
+    <a href="#/" class="flex items-center gap-2 min-w-0 flex-1">
+      <span class="text-2xl sm:text-3xl text-parchment-600 dark:text-parchment-300">✦</span>
+      <div class="min-w-0">
+        <h1 class="font-serif text-xl sm:text-2xl leading-none text-ink-700 dark:text-parchment-100 truncate">
+          Disfrute de la vida para siempre
+        </h1>
+        <p class="text-[0.7rem] sm:text-xs font-sans text-ink-400 dark:text-parchment-300/70 uppercase tracking-widest">
+          Versículos · Traducción del Nuevo Mundo
+        </p>
+      </div>
+    </a>
+
+    <button id="themeToggle" class="p-2 rounded hover:bg-parchment-100 dark:hover:bg-ink-700 transition-colors" aria-label="Cambiar tema">
+      <!-- Sun icon (shown in dark mode) -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 hidden dark:block">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <!-- Moon icon (shown in light mode) -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 dark:hidden">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- Layout -->
+<div class="max-w-7xl mx-auto lg:flex lg:gap-6 px-0 lg:px-6">
+
+  <!-- Sidebar -->
+  <aside id="sidebar"
+    class="fixed lg:sticky top-[61px] lg:top-[73px] left-0 z-20
+           w-80 max-w-[85vw] lg:w-72 shrink-0
+           h-[calc(100vh-61px)] lg:h-[calc(100vh-73px)]
+           bg-parchment-50 dark:bg-ink-800
+           border-r lg:border-r-0 border-parchment-200 dark:border-ink-700
+           overflow-y-auto
+           transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-out">
+    <div class="p-4">
+      <div class="mb-4">
+        <input id="searchBox" type="search" placeholder="Buscar lección…"
+          class="w-full px-3 py-2 rounded border border-parchment-200 dark:border-ink-600 bg-white dark:bg-ink-900 text-ink-700 dark:text-parchment-100 font-sans text-sm focus:outline-none focus:border-parchment-500 dark:focus:border-parchment-400">
+      </div>
+      <nav id="sectionsNav" class="space-y-2"></nav>
+    </div>
+  </aside>
+
+  <!-- Backdrop for mobile sidebar -->
+  <div id="sidebarBackdrop" class="fixed inset-0 z-10 bg-black/40 opacity-0 pointer-events-none lg:hidden sidebar-backdrop"></div>
+
+  <!-- Main content -->
+  <main class="flex-1 min-w-0 px-4 sm:px-6 lg:px-0 py-6 lg:py-10">
+    <article id="content" class="prose-bible max-w-3xl mx-auto">
+      <!-- Welcome screen (overwritten on navigation) -->
+      <div id="welcome" class="text-center py-10">
+        <div class="ornament"></div>
+        <h2 class="font-serif text-4xl sm:text-5xl text-parchment-700 dark:text-parchment-300 mb-4" style="letter-spacing: 0.02em;">
+          Disfrute de la vida para siempre
+        </h2>
+        <p class="italic text-parchment-600 dark:text-parchment-400 text-xl mb-8">
+          Estudio bíblico en 60 lecciones
+        </p>
+        <div class="ornament"></div>
+        <p class="max-w-xl mx-auto text-lg text-ink-600 dark:text-parchment-200/80 mt-8 leading-relaxed">
+          Seleccione una lección del menú para leer los versículos que la acompañan, tal como aparecen en la
+          <em>Traducción del Nuevo Mundo de las Santas Escrituras</em>.
+        </p>
+        <div id="sectionCards" class="grid sm:grid-cols-2 gap-4 mt-10 text-left"></div>
+      </div>
+    </article>
+
+    <!-- Prev / Next navigation -->
+    <nav id="prevNext" class="max-w-3xl mx-auto mt-10 mb-6 hidden">
+      <div class="flex justify-between gap-3 pt-6 border-t border-parchment-200 dark:border-ink-700">
+        <a id="prevLink" href="#" class="flex-1 max-w-[48%] px-4 py-3 rounded border border-parchment-200 dark:border-ink-700 hover:bg-parchment-100 dark:hover:bg-ink-800 transition-colors group">
+          <div class="text-xs font-sans uppercase tracking-wider text-ink-400 dark:text-parchment-400 mb-1">← Anterior</div>
+          <div class="font-serif text-base text-ink-700 dark:text-parchment-100 group-hover:text-parchment-700 dark:group-hover:text-parchment-300 line-clamp-2" id="prevTitle"></div>
+        </a>
+        <a id="nextLink" href="#" class="flex-1 max-w-[48%] px-4 py-3 rounded border border-parchment-200 dark:border-ink-700 hover:bg-parchment-100 dark:hover:bg-ink-800 transition-colors text-right group">
+          <div class="text-xs font-sans uppercase tracking-wider text-ink-400 dark:text-parchment-400 mb-1">Siguiente →</div>
+          <div class="font-serif text-base text-ink-700 dark:text-parchment-100 group-hover:text-parchment-700 dark:group-hover:text-parchment-300 line-clamp-2" id="nextTitle"></div>
+        </a>
+      </div>
+    </nav>
+  </main>
+</div>
+
+<footer class="max-w-7xl mx-auto px-4 sm:px-6 py-6 text-center text-xs font-sans text-ink-400 dark:text-parchment-400">
+  <span class="ornament"></span>
+  Textos bíblicos de la <em>Traducción del Nuevo Mundo</em>.
+</footer>
+
+<script>
+  // ============ LESSON DATA ============
+  const SECTIONS = [
+    { num: 1, title: 'Sección 1', subtitle: 'Conozca a Jehová', range: [1, 12] },
+    { num: 2, title: 'Sección 2', subtitle: 'Cómo adorar a Dios', range: [13, 33] },
+    { num: 3, title: 'Sección 3', subtitle: 'Viva según la Biblia', range: [34, 47] },
+    { num: 4, title: 'Sección 4', subtitle: 'Manténgase firme en la fe', range: [48, 60] },
+  ];
+
+  // [lessonNumber, filename, title]
+  const LESSONS = [
+    [1, 'Lección 01 — ¿Cómo puede ayudarle la Biblia?.md', '¿Cómo puede ayudarle la Biblia?'],
+    [2, 'Lección 02 — La Biblia nos da esperanza.md', 'La Biblia nos da esperanza'],
+    [3, 'Lección 03 — ¿Se puede confiar en la Biblia?.md', '¿Se puede confiar en la Biblia?'],
+    [4, 'Lección 04 — ¿Quién es Dios?', '¿Quién es Dios?'],
+    [5, 'Lección 05 — La Biblia contiene el mensaje de Dios para nosotros.md', 'La Biblia contiene el mensaje de Dios para nosotros'],
+    [6, 'Lección 06 — ¿Cómo empezó la vida?.md', '¿Cómo empezó la vida?'],
+    [7, 'Lección 07 — ¿Cómo es Jehová?.md', '¿Cómo es Jehová?'],
+    [8, 'Lección 08 — Usted puede ser amigo de Jehová.md', 'Usted puede ser amigo de Jehová'],
+    [9, 'Lección 09 — La oración le acerca a Dios.md', 'La oración le acerca a Dios'],
+    [10, 'Lección 10 — ¿Por qué es bueno que asista a las reuniones de los testigos de Jehová?.md', '¿Por qué es bueno que asista a las reuniones de los testigos de Jehová?'],
+    [11, 'Lección 11 — Cómo sacarle el máximo provecho a la Biblia.md', 'Cómo sacarle el máximo provecho a la Biblia'],
+    [12, 'Lección 12 — ¿Qué le ayudará a seguir estudiando la Biblia?.md', '¿Qué le ayudará a seguir estudiando la Biblia?'],
+    [13, 'Lección 13 — Las religiones falsas manchan la reputación de Dios.md', 'Las religiones falsas manchan la reputación de Dios'],
+    [14, 'Lección 14 — ¿Qué hace falta para que Dios acepte nuestra adoración?.md', '¿Qué hace falta para que Dios acepte nuestra adoración?'],
+    [15, 'Lección 15 — ¿Quién es Jesús?.md', '¿Quién es Jesús?'],
+    [16, 'Lección 16 — ¿Qué hizo Jesús cuando estuvo en la Tierra?.md', '¿Qué hizo Jesús cuando estuvo en la Tierra?'],
+    [17, 'Lección 17 — ¿Cómo es Jesús?.md', '¿Cómo es Jesús?'],
+    [18, 'Lección 18 — Cómo saber quiénes son los verdaderos cristianos.md', 'Cómo saber quiénes son los verdaderos cristianos'],
+    [19, 'Lección 19 — ¿Son los testigos de Jehová verdaderos cristianos?.md', '¿Son los testigos de Jehová verdaderos cristianos?'],
+    [20, 'Lección 20 — Cómo está organizada la congregación.md', 'Cómo está organizada la congregación'],
+    [21, 'Lección 21 — ¿Cómo se están predicando las buenas noticias?.md', '¿Cómo se están predicando las buenas noticias?'],
+    [22, 'Lección 22 — ¿Cómo puede predicar usted las buenas noticias?.md', '¿Cómo puede predicar usted las buenas noticias?'],
+    [23, 'Lección 23 — El bautismo: una meta que vale la pena alcanzar.md', 'El bautismo: una meta que vale la pena alcanzar'],
+    [24, 'Lección 24 — ¿Qué dice la Biblia sobre los ángeles?.md', '¿Qué dice la Biblia sobre los ángeles?'],
+    [25, 'Lección 25 — ¿Qué propósito tiene Dios para nosotros?.md', '¿Qué propósito tiene Dios para nosotros?'],
+    [26, 'Lección 26 — ¿Por qué hay tanta maldad y sufrimiento?.md', '¿Por qué hay tanta maldad y sufrimiento?'],
+    [27, 'Lección 27 — ¿En qué sentido nos salva la muerte de Jesús?.md', '¿En qué sentido nos salva la muerte de Jesús?'],
+    [28, 'Lección 28 — Demuestre que valora lo que Jehová y Jesús hicieron por usted.md', 'Demuestre que valora lo que Jehová y Jesús hicieron por usted'],
+    [29, 'Lección 29 — ¿Hay vida después de la muerte?.md', '¿Hay vida después de la muerte?'],
+    [30, 'Lección 30 — ¡Sus seres queridos pueden volver a vivir!.md', '¡Sus seres queridos pueden volver a vivir!'],
+    [31, 'Lección 31 — ¿Qué es el Reino de Dios?.md', '¿Qué es el Reino de Dios?'],
+    [32, 'Lección 32 — ¡El Reino de Dios ya está gobernando!.md', '¡El Reino de Dios ya está gobernando!'],
+    [33, 'Lección 33 — Lo que logrará el Reino de Dios.md', 'Lo que logrará el Reino de Dios'],
+    [34, 'Lección 34 — ¿Cómo podemos demostrarle a Jehová que lo amamos?.md', '¿Cómo podemos demostrarle a Jehová que lo amamos?'],
+    [35, 'Lección 35 — Cómo tomar buenas decisiones.md', 'Cómo tomar buenas decisiones'],
+    [36, 'Lección 36 — Seamos honrados en todo.md', 'Seamos honrados en todo'],
+    [37, 'Lección 37 — Lo que la Biblia dice sobre el trabajo y el dinero.md', 'Lo que la Biblia dice sobre el trabajo y el dinero'],
+    [38, 'Lección 38 — Agradezcamos el regalo de la vida.md', 'Agradezcamos el regalo de la vida'],
+    [39, 'Lección 39 — El punto de vista de Jehová sobre la sangre.md', 'El punto de vista de Jehová sobre la sangre'],
+    [40, 'Lección 40 — Cómo ser limpios desde el punto de vista de Dios.md', 'Cómo ser limpios desde el punto de vista de Dios'],
+    [41, 'Lección 41 — ¿Qué dice la Biblia sobre el sexo?.md', '¿Qué dice la Biblia sobre el sexo?'],
+    [42, 'Lección 42 — ¿Qué dice la Biblia de la soltería y el matrimonio?.md', '¿Qué dice la Biblia de la soltería y el matrimonio?'],
+    [43, 'Lección 43 — Los cristianos y las bebidas alcohólicas.md', 'Los cristianos y las bebidas alcohólicas'],
+    [44, 'Lección 44 — ¿Acepta Dios todas las fiestas?.md', '¿Acepta Dios todas las fiestas?'],
+    [45, 'Lección 45 — ¿Qué implica ser neutral?.md', '¿Qué implica ser neutral?'],
+    [46, 'Lección 46 — ¿Por qué dedicarse y bautizarse?.md', '¿Por qué dedicarse y bautizarse?'],
+    [47, 'Lección 47 — ¿Está usted preparado para bautizarse?.md', '¿Está usted preparado para bautizarse?'],
+    [48, 'Lección 48 — Elija bien a sus amigos.md', 'Elija bien a sus amigos'],
+    [49, 'Lección 49 — Cómo puede tener una familia feliz (parte 1).md', 'Cómo puede tener una familia feliz (parte 1)'],
+    [50, 'Lección 50 — Cómo puede tener una familia feliz (parte 2).md', 'Cómo puede tener una familia feliz (parte 2)'],
+    [51, 'Lección 51 — Cómo complacer a Jehová con nuestra forma de hablar.md', 'Cómo complacer a Jehová con nuestra forma de hablar'],
+    [52, 'Lección 52 — Por qué importa nuestra forma de arreglarnos.md', 'Por qué importa nuestra forma de arreglarnos'],
+    [53, 'Lección 53 — Que su entretenimiento le agrade a Jehová.md', 'Que su entretenimiento le agrade a Jehová'],
+    [54, 'Lección 54 — El papel del esclavo fiel y prudente.md', 'El papel del esclavo fiel y prudente'],
+    [55, 'Lección 55 — Apoye a su congregación.md', 'Apoye a su congregación'],
+    [56, 'Lección 56 — Contribuya a la unidad de la congregación.md', 'Contribuya a la unidad de la congregación'],
+    [57, 'Lección 57 — ¿Qué pasaría si cometiera un pecado grave?.md', '¿Qué pasaría si cometiera un pecado grave?'],
+    [58, 'Lección 58 — Sea siempre leal a Jehová.md', 'Sea siempre leal a Jehová'],
+    [59, 'Lección 59 — Usted puede aguantar la persecución.md', 'Usted puede aguantar la persecución'],
+    [60, 'Lección 60 — Siga creciendo espiritualmente.md', 'Siga creciendo espiritualmente'],
+  ].map(([num, file, title]) => ({ num, file, title }));
+
+  function lessonSection(n) {
+    return SECTIONS.find(s => n >= s.range[0] && n <= s.range[1]);
+  }
+
+  // ============ THEME ============
+  const themeToggle = document.getElementById('themeToggle');
+  function applyTheme(t) {
+    document.documentElement.classList.toggle('dark', t === 'dark');
+    localStorage.setItem('theme', t);
+  }
+  const savedTheme = localStorage.getItem('theme')
+    || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(savedTheme);
+  themeToggle.addEventListener('click', () => {
+    applyTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark');
+  });
+
+  // ============ SIDEBAR ============
+  const sectionsNav = document.getElementById('sectionsNav');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  const menuToggle = document.getElementById('menuToggle');
+
+  function openSidebar() {
+    sidebar.classList.remove('-translate-x-full');
+    backdrop.classList.remove('opacity-0', 'pointer-events-none');
+    backdrop.classList.add('opacity-100');
+  }
+  function closeSidebar() {
+    sidebar.classList.add('-translate-x-full');
+    backdrop.classList.add('opacity-0', 'pointer-events-none');
+    backdrop.classList.remove('opacity-100');
+  }
+  menuToggle.addEventListener('click', openSidebar);
+  backdrop.addEventListener('click', closeSidebar);
+
+  function buildSidebar() {
+    sectionsNav.innerHTML = '';
+    SECTIONS.forEach(sec => {
+      const lessons = LESSONS.filter(l => l.num >= sec.range[0] && l.num <= sec.range[1]);
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'rounded-lg overflow-hidden border border-parchment-200 dark:border-ink-700 bg-parchment-50 dark:bg-ink-800';
+
+      const header = document.createElement('button');
+      header.type = 'button';
+      header.className = 'w-full flex items-center justify-between px-3 py-3 text-left hover:bg-parchment-100 dark:hover:bg-ink-700 transition-colors';
+      header.innerHTML = `
+        <div class="min-w-0">
+          <div class="text-[0.7rem] font-sans uppercase tracking-widest text-parchment-600 dark:text-parchment-400">${sec.title}</div>
+          <div class="font-serif text-base text-ink-700 dark:text-parchment-100 italic truncate">${sec.subtitle}</div>
+          <div class="text-xs font-sans text-ink-400 dark:text-parchment-400/70">Lecciones ${sec.range[0]}–${sec.range[1]}</div>
+        </div>
+        <svg class="w-4 h-4 shrink-0 ml-2 transition-transform caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      `;
+
+      const list = document.createElement('ul');
+      list.className = 'section-lessons border-t border-parchment-200 dark:border-ink-700';
+      list.setAttribute('data-section', sec.num);
+      list.style.maxHeight = '0px';
+
+      lessons.forEach(lesson => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `#/leccion/${lesson.num}`;
+        a.dataset.lessonNum = lesson.num;
+        a.className = 'block px-3 py-2 text-sm font-sans text-ink-600 dark:text-parchment-200 hover:bg-parchment-100 dark:hover:bg-ink-700 border-l-4 border-transparent transition-colors';
+        a.innerHTML = `
+          <span class="inline-block w-8 text-parchment-600 dark:text-parchment-400 tabular-nums">${String(lesson.num).padStart(2,'0')}</span>
+          <span>${lesson.title}</span>
+        `;
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+
+      header.addEventListener('click', () => {
+        const open = list.style.maxHeight && list.style.maxHeight !== '0px';
+        if (open) {
+          list.style.maxHeight = '0px';
+          header.querySelector('.caret').style.transform = '';
+        } else {
+          list.style.maxHeight = list.scrollHeight + 'px';
+          header.querySelector('.caret').style.transform = 'rotate(180deg)';
+        }
+      });
+
+      wrapper.appendChild(header);
+      wrapper.appendChild(list);
+      sectionsNav.appendChild(wrapper);
+    });
+  }
+
+  function expandSectionOfLesson(n) {
+    const sec = lessonSection(n);
+    if (!sec) return;
+    const list = sectionsNav.querySelector(`[data-section="${sec.num}"]`);
+    if (list) {
+      list.style.maxHeight = list.scrollHeight + 'px';
+      const caret = list.previousElementSibling.querySelector('.caret');
+      if (caret) caret.style.transform = 'rotate(180deg)';
+    }
+  }
+
+  function highlightActive(n) {
+    sectionsNav.querySelectorAll('a[data-lesson-num]').forEach(a => {
+      const active = Number(a.dataset.lessonNum) === n;
+      a.classList.toggle('bg-parchment-100', active);
+      a.classList.toggle('dark:bg-ink-700', active);
+      a.classList.toggle('border-parchment-500', active);
+      a.classList.toggle('dark:border-parchment-400', active);
+      a.classList.toggle('text-ink-900', active);
+      a.classList.toggle('dark:text-parchment-50', active);
+      a.classList.toggle('font-medium', active);
+      if (active) a.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  }
+
+  // ============ SEARCH ============
+  const searchBox = document.getElementById('searchBox');
+  searchBox.addEventListener('input', () => {
+    const q = searchBox.value.trim().toLowerCase();
+    sectionsNav.querySelectorAll('a[data-lesson-num]').forEach(a => {
+      const matches = a.textContent.toLowerCase().includes(q);
+      a.parentElement.style.display = matches ? '' : 'none';
+    });
+    // Expand all sections that contain matches when searching
+    if (q) {
+      sectionsNav.querySelectorAll('.section-lessons').forEach(list => {
+        const anyVisible = Array.from(list.children).some(li => li.style.display !== 'none');
+        if (anyVisible) list.style.maxHeight = list.scrollHeight + 'px';
+      });
+    }
+  });
+
+  // ============ WELCOME SECTION CARDS ============
+  function renderWelcomeCards() {
+    const cardsEl = document.getElementById('sectionCards');
+    if (!cardsEl) return;
+    cardsEl.innerHTML = SECTIONS.map(sec => `
+      <a href="#/seccion/${sec.num}" class="block p-5 rounded-lg border border-parchment-200 dark:border-ink-700 bg-parchment-50/60 dark:bg-ink-800/60 hover:border-parchment-400 dark:hover:border-parchment-500 transition-colors group">
+        <div class="text-[0.7rem] font-sans uppercase tracking-widest text-parchment-600 dark:text-parchment-400 mb-1">${sec.title}</div>
+        <div class="font-serif text-xl text-ink-700 dark:text-parchment-100 italic mb-2">${sec.subtitle}</div>
+        <div class="text-sm font-sans text-ink-500 dark:text-parchment-300">Lecciones ${sec.range[0]}–${sec.range[1]}</div>
+      </a>
+    `).join('');
+  }
+
+  // ============ CONTENT RENDERING ============
+  const contentEl = document.getElementById('content');
+  const prevNextNav = document.getElementById('prevNext');
+
+  marked.setOptions({ breaks: false, gfm: true });
+
+  async function loadLesson(n) {
+    const lesson = LESSONS.find(l => l.num === n);
+    if (!lesson) {
+      contentEl.innerHTML = `<div class="text-center py-20"><h2>Lección no encontrada</h2><p>No existe la lección ${n}.</p></div>`;
+      prevNextNav.classList.add('hidden');
+      return;
+    }
+
+    contentEl.innerHTML = `
+      <div class="text-center py-20 opacity-60">
+        <div class="inline-block w-8 h-8 border-2 border-parchment-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 font-sans text-sm">Cargando lección ${n}…</p>
+      </div>`;
+
+    try {
+      const resp = await fetch(encodeURIComponent(lesson.file));
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const md = await resp.text();
+      const html = marked.parse(md);
+      contentEl.innerHTML = `<div class="content-enter">${html}</div>`;
+      document.title = `Lección ${String(n).padStart(2,'0')} — ${lesson.title}`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Prev / next nav
+      const prev = LESSONS.find(l => l.num === n - 1);
+      const next = LESSONS.find(l => l.num === n + 1);
+      const prevLink = document.getElementById('prevLink');
+      const nextLink = document.getElementById('nextLink');
+      if (prev) {
+        prevLink.href = `#/leccion/${prev.num}`;
+        document.getElementById('prevTitle').textContent = `${String(prev.num).padStart(2,'0')} — ${prev.title}`;
+        prevLink.style.visibility = '';
+      } else { prevLink.style.visibility = 'hidden'; }
+      if (next) {
+        nextLink.href = `#/leccion/${next.num}`;
+        document.getElementById('nextTitle').textContent = `${String(next.num).padStart(2,'0')} — ${next.title}`;
+        nextLink.style.visibility = '';
+      } else { nextLink.style.visibility = 'hidden'; }
+      prevNextNav.classList.remove('hidden');
+    } catch (e) {
+      prevNextNav.classList.add('hidden');
+      contentEl.innerHTML = `
+        <div class="max-w-2xl mx-auto mt-10 p-6 rounded-lg border border-red-300/60 bg-red-50/40 dark:border-red-400/40 dark:bg-red-900/20">
+          <h3 class="text-xl font-serif text-red-700 dark:text-red-300 mb-2">No se pudo cargar la lección ${n}</h3>
+          <p class="text-sm font-sans text-ink-600 dark:text-parchment-200 mb-4">
+            Error: <code>${e.message}</code>
+          </p>
+          <p class="text-sm font-sans text-ink-500 dark:text-parchment-300 leading-relaxed">
+            Si está abriendo este archivo directamente desde el disco (<code>file://</code>), su navegador puede estar bloqueando la carga de los ficheros <code>.md</code>. Pruebe a servir la carpeta con un servidor local, por ejemplo:
+          </p>
+          <pre class="mt-3 p-3 rounded bg-ink-800 text-parchment-100 font-mono text-xs overflow-x-auto">python3 -m http.server 8000</pre>
+          <p class="text-sm font-sans text-ink-500 dark:text-parchment-300 mt-2">
+            Luego abra <a class="underline" href="http://localhost:8000">http://localhost:8000</a>.
+          </p>
+        </div>`;
+    }
+  }
+
+  function showWelcome() {
+    contentEl.innerHTML = `
+      <div id="welcome" class="text-center py-10">
+        <div class="ornament"></div>
+        <h2 class="font-serif text-4xl sm:text-5xl text-parchment-700 dark:text-parchment-300 mb-4" style="letter-spacing: 0.02em;">
+          Disfrute de la vida para siempre
+        </h2>
+        <p class="italic text-parchment-600 dark:text-parchment-400 text-xl mb-8">
+          Estudio bíblico en 60 lecciones
+        </p>
+        <div class="ornament"></div>
+        <p class="max-w-xl mx-auto text-lg text-ink-600 dark:text-parchment-200/80 mt-8 leading-relaxed">
+          Seleccione una lección del menú para leer los versículos que la acompañan, tal como aparecen en la
+          <em>Traducción del Nuevo Mundo de las Santas Escrituras</em>.
+        </p>
+        <div id="sectionCards" class="grid sm:grid-cols-2 gap-4 mt-10 text-left"></div>
+      </div>`;
+    renderWelcomeCards();
+    prevNextNav.classList.add('hidden');
+    document.title = 'Disfrute de la vida para siempre — Estudio bíblico';
+    highlightActive(-1);
+  }
+
+  function showSection(secNum) {
+    const sec = SECTIONS.find(s => s.num === secNum);
+    if (!sec) { showWelcome(); return; }
+    const lessons = LESSONS.filter(l => l.num >= sec.range[0] && l.num <= sec.range[1]);
+    contentEl.innerHTML = `
+      <div class="text-center mb-8">
+        <div class="ornament"></div>
+        <div class="text-sm font-sans uppercase tracking-widest text-parchment-600 dark:text-parchment-400 mb-1">${sec.title}</div>
+        <h2 class="font-serif text-3xl sm:text-4xl text-ink-700 dark:text-parchment-100 italic mb-1">${sec.subtitle}</h2>
+        <p class="text-sm font-sans text-ink-500 dark:text-parchment-300">Lecciones ${sec.range[0]}–${sec.range[1]}</p>
+        <div class="ornament mt-2"></div>
+      </div>
+      <div class="grid gap-3">
+        ${lessons.map(l => `
+          <a href="#/leccion/${l.num}" class="block p-4 rounded-lg border border-parchment-200 dark:border-ink-700 bg-parchment-50/60 dark:bg-ink-800/60 hover:border-parchment-500 dark:hover:border-parchment-400 hover:bg-parchment-100 dark:hover:bg-ink-700/60 transition-colors">
+            <div class="flex items-start gap-4">
+              <div class="font-serif text-2xl text-parchment-600 dark:text-parchment-400 tabular-nums shrink-0 w-10">${String(l.num).padStart(2,'0')}</div>
+              <div class="font-serif text-lg text-ink-700 dark:text-parchment-100 leading-tight">${l.title}</div>
+            </div>
+          </a>`).join('')}
+      </div>`;
+    prevNextNav.classList.add('hidden');
+    document.title = `${sec.title} — ${sec.subtitle}`;
+    expandSectionOfLesson(sec.range[0]);
+    highlightActive(-1);
+  }
+
+  // ============ ROUTER ============
+  function route() {
+    const hash = window.location.hash.replace(/^#\/?/, '');
+    if (!hash || hash === '') {
+      showWelcome();
+      return;
+    }
+    const lessonMatch = hash.match(/^leccion\/(\d+)/);
+    if (lessonMatch) {
+      const n = Number(lessonMatch[1]);
+      expandSectionOfLesson(n);
+      highlightActive(n);
+      loadLesson(n);
+      if (window.innerWidth < 1024) closeSidebar();
+      return;
+    }
+    const sectionMatch = hash.match(/^seccion\/(\d+)/);
+    if (sectionMatch) {
+      showSection(Number(sectionMatch[1]));
+      if (window.innerWidth < 1024) closeSidebar();
+      return;
+    }
+    showWelcome();
+  }
+
+  // ============ INIT ============
+  buildSidebar();
+  renderWelcomeCards();
+  window.addEventListener('hashchange', route);
+  route();
+</script>
+</body>
+</html>

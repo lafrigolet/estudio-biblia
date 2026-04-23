@@ -1,100 +1,116 @@
-## Lección 17 — *«¿Cómo es Jesús?»*
+## Versículos de la Lección 17 — Traducción del Nuevo Mundo
+### *«¿Cómo es Jesús?»*
 
-Los versículos de esta lección son: Juan 5:19 · Juan 14:9 · Juan 14:31 · Juan 14:23 · Proverbios 8:31 · Marcos 1:40-42 · Juan 15:13-14 · Lucas 6:12 · Juan 15:10 · Juan 17:26 · Marcos 6:30-44 · Hechos 20:35 · Juan 16:23-24
+Los versículos de esta lección son: Juan 5:19 · Juan 14:9 · Juan 14:31 · Juan 14:23 · Proverbios 8:31 · Marcos 1:40-42 · Juan 15:13, 14 · Lucas 6:12 · Juan 15:10 · Juan 17:26 · Marcos 6:30-44 · Marcos 6:31 · Marcos 6:34 · Marcos 6:41, 42 · Hechos 20:35 · Juan 16:23, 24
 
 ---
 
 ### 📌 Juan 5:19
-*(Jesús actúa exactamente como su Padre — refleja su personalidad)*
+*(Jesús imita perfectamente las acciones de su Padre)*
 
-«Por lo tanto, Jesús les dijo: "De verdad les aseguro que el Hijo no puede hacer ni una sola cosa por su cuenta, solo hace lo que le ve hacer al Padre. Porque todas las cosas que hace el Padre, el Hijo también las hace de la misma manera."»
+> «Por lo tanto, Jesús les dijo: "De verdad les aseguro que el Hijo no puede hacer ni una sola cosa por su cuenta, solo hace lo que le ve hacer al Padre. Porque todas las cosas que hace el Padre, el Hijo también las hace de la misma manera.»
 
 ---
 
 ### 📌 Juan 14:9
-*(Ver a Jesús es como ver al Padre)*
+*(Conocer a Jesús es conocer al Padre porque reflejan las mismas cualidades)*
 
-«Jesús le contestó: "Felipe, con todo el tiempo que llevo con ustedes, ¿todavía no me conoces? El que me ha visto a mí ha visto al Padre también. ¿Cómo es que me dices 'Muéstranos al Padre'?"»
+> «Jesús le contestó: "Felipe, con todo el tiempo que llevo con ustedes, ¿todavía no me conoces? El que me ha visto a mí ha visto al Padre también. ¿Cómo es que me dices 'Muéstranos al Padre'?»
 
 ---
 
 ### 📌 Juan 14:31
-*(Jesús ama al Padre y hace lo que él manda)*
+*(Jesús demuestra su amor al Padre obedeciéndolo)*
 
-«"Pero, para que el mundo sepa que amo al Padre, hago exactamente lo que el Padre me ha mandado. Levántense, vámonos de aquí."»
+> «Pero, para que el mundo sepa que amo al Padre, hago exactamente lo que el Padre me ha mandado. Levántense, vámonos de aquí.»
 
 ---
 
 ### 📌 Juan 14:23
-*(Jesús amaba hablar de su Padre y acercar a otros a Dios)*
+*(Quienes aman a Jesús obedecen sus palabras y reciben amor divino)*
 
-«Jesús le contestó: "Si alguien me ama, obedecerá mis palabras. Y mi Padre lo amará, y nosotros dos vendremos a él y viviremos con él."»
+> «Jesús le contestó: "Si alguien me ama, obedecerá mis palabras. Y mi Padre lo amará, y nosotros dos vendremos a él y viviremos con él.»
 
 ---
 
 ### 📌 Proverbios 8:31
-*(Jesús, como la sabiduría personificada, tenía un cariño especial por los seres humanos)*
+*(Jesús sentía un cariño especial por los seres humanos desde antes de venir a la Tierra)*
 
-«"Yo me alegraba por la tierra, hecha para ser habitada, y les tenía un cariño especial a los seres humanos."»
+> «Yo me alegraba por la tierra, hecha para ser habitada, y les tenía un cariño especial a los seres humanos.»
 
 ---
 
 ### 📌 Marcos 1:40-42
-*(Compasión de Jesús al curar a un leproso)*
+*(Jesús mostró compasión al tocar y sanar a un leproso)*
 
-«40 Un leproso se le acercó suplicándole hasta de rodillas: "Yo sé que si tú quieres me puedes limpiar". 41 Jesús se conmovió tanto que extendió la mano, lo tocó y le dijo: "Yo quiero. Queda limpio". 42 Enseguida la lepra desapareció y él quedó limpio.»
+> «40 Un leproso se le acercó suplicándole hasta de rodillas: "Yo sé que si tú quieres me puedes limpiar". 41 Jesús se conmovió tanto que extendió la mano, lo tocó y le dijo: "Yo quiero. Queda limpio". 42 Enseguida la lepra desapareció y él quedó limpio.»
 
 ---
 
-### 📌 Juan 15:13-14
-*(Jesús estuvo dispuesto a morir por amor a sus discípulos)*
+### 📌 Juan 15:13, 14
+*(Jesús demostró el mayor amor al dar su vida por sus amigos)*
 
-> «13 Nadie tiene amor más grande que este: que alguien dé su vida por sus amigos. 14 Ustedes son mis amigos si hacen lo que yo les mando.»
+> «13 Nadie tiene amor más grande que quien da su vida por sus amigos. 14 Ustedes son mis amigos si hacen lo que les mando.»
 
 ---
 
 ### 📌 Lucas 6:12
-*(Jesús oraba para demostrar su amor al Padre)*
+*(Jesús dedicaba toda una noche a orar a su Padre)*
 
-> «En aquellos días él salió a la montaña a orar y pasó toda la noche en oración a Dios.»
+> «Uno de esos días, él se fue a la montaña a orar y estuvo toda la noche orándole a Dios.»
 
 ---
 
 ### 📌 Juan 15:10
-*(Demostrar amor a Jehová obedeciéndolo, como Jesús obedeció al Padre)*
+*(Jesús nos dejó el ejemplo perfecto de obediencia al Padre)*
 
-> «Si obedecen mis mandamientos, se mantendrán en mi amor, así como yo he obedecido los mandamientos de mi Padre y me mantengo en su amor.»
+> «Si obedecen mis mandamientos, permanecerán en mi amor, así como yo he obedecido los mandamientos del Padre y permanezco en su amor.»
 
 ---
 
 ### 📌 Juan 17:26
-*(Jesús seguirá dando a conocer el nombre del Padre)*
+*(Jesús dio a conocer el nombre de su Padre)*
 
-Recuperado directamente en la sesión anterior (Juan 17, obtenido de jw.org):
-
-> «Les he dado a conocer tu nombre, y seguiré dándolo a conocer, para que el amor con que tú me amaste esté en ellos y yo esté en unión con ellos.»
+> «Les he dado a conocer tu nombre, y seguiré dándolo a conocer, para que el amor con que tú me amaste esté en ellos y yo esté en unión con ellos".»
 
 ---
 
-### 📌 Marcos 6:30-44 *(versículos destacados: 31, 34, 41-42)*
-*(Jesús se preocupa por los necesitados aunque esté cansado)*
+### 📌 Marcos 6:30-44
+*(Relato que muestra la compasión y la consideración de Jesús hacia la gente)*
 
-> «31 Y él les dijo: "Vengan conmigo a un lugar apartado y descansen un poco". [...] 34 Al bajar de la barca, vio una gran multitud y se conmovió, porque eran como ovejas sin pastor. Así que se puso a enseñarles muchas cosas. [...] 41 Y tomó los cinco panes y los dos peces, miró al cielo y dio gracias. Partió los panes y fue dándoselos a sus discípulos para que se los sirvieran a la gente. [...] 42 Todos comieron y se quedaron satisfechos.»
+> «30 Los apóstoles se juntaron alrededor de Jesús y le contaron todas las cosas que habían hecho y enseñado. 31 Y él les dijo: "Vengan conmigo; vamos solos a un lugar retirado para que descansen un poco". Es que mucha gente iba y venía, y ellos no tenían tiempo ni para comer. 32 Por eso se fueron en la barca a un lugar retirado donde pudieran estar solos. 33 Pero hubo gente que los vio irse, y muchos otros también se enteraron. Así que personas de todas las ciudades fueron rápidamente a pie y llegaron allí antes que ellos. 34 Al bajarse de la barca, él vio una gran multitud y se conmovió profundamente, porque eran como ovejas sin pastor. Y se puso a enseñarles muchas cosas. 35 Como ya se había hecho tarde, sus discípulos se le acercaron y le dijeron: "Este lugar está retirado y ya es tarde. 36 Despide a la gente para que vaya a los campos y aldeas cercanos y se compre algo de comer". 37 Pero él les respondió: "Denles de comer ustedes". Entonces ellos le preguntaron: "¿Quieres que vayamos a comprar 200 denarios de pan para darles de comer?". 38 Él les dijo: "¿Cuántos panes tienen? Vayan a ver". Después de averiguarlo, le dijeron: "Cinco, además de dos pescados". 39 Entonces le mandó a toda la gente que se sentara por grupos en la hierba verde. 40 Así que se sentaron en grupos de 100 y de 50. 41 Luego tomó los cinco panes y los dos pescados, miró hacia el cielo e hizo una oración. Después partió los panes y comenzó a dárselos a los discípulos para que se los sirvieran a la gente. Y también repartió entre todos los dos pescados. 42 De modo que todos comieron y quedaron satisfechos. 43 Luego recogieron 12 canastas llenas de pedazos de pan, además de los pescados. 44 En total, comieron de los panes 5.000 hombres.»
+
+---
+
+### 📌 Marcos 6:31
+*(Jesús se preocupaba por las necesidades de descanso de sus discípulos)*
+
+> «Y él les dijo: "Vengan conmigo; vamos solos a un lugar retirado para que descansen un poco". Es que mucha gente iba y venía, y ellos no tenían tiempo ni para comer.»
+
+---
+
+### 📌 Marcos 6:34
+*(Jesús sintió profunda compasión por la gente y les enseñó)*
+
+> «Al bajarse de la barca, él vio una gran multitud y se conmovió profundamente, porque eran como ovejas sin pastor. Y se puso a enseñarles muchas cosas.»
+
+---
+
+### 📌 Marcos 6:41, 42
+*(Jesús satisfizo la necesidad física de la multitud con un milagro)*
+
+> «41 Luego tomó los cinco panes y los dos pescados, miró hacia el cielo e hizo una oración. Después partió los panes y comenzó a dárselos a los discípulos para que se los sirvieran a la gente. Y también repartió entre todos los dos pescados. 42 De modo que todos comieron y quedaron satisfechos.»
 
 ---
 
 ### 📌 Hechos 20:35
 *(Jesús enseñó que hay más felicidad en dar que en recibir)*
 
-> «En todo les he mostrado que trabajando así hay que ayudar a los que son débiles y recordar las palabras del Señor Jesús, que dijo: "Hay más felicidad en dar que en recibir".»
+> «En todo les he demostrado que deben trabajar así de duro para ayudar a los que son débiles y que deben recordar estas palabras que dijo el Señor Jesús: 'Hay más felicidad en dar que en recibir'".»
 
 ---
 
-### 📌 Juan 16:23-24
-*(Orar al Padre en el nombre de Jesús)*
+### 📌 Juan 16:23, 24
+*(Podemos orar al Padre en nombre de Jesús y recibir respuestas)*
 
-> «23 Y en aquel día no me preguntarán nada. De verdad les aseguro que si piden algo al Padre, él se lo dará en mi nombre. 24 Hasta ahora no han pedido nada en mi nombre. Pidan y recibirán, para que su alegría sea completa.»
-
----
-
-Todos los versículos han sido obtenidos directamente de jw.org durante esta sesión o reproducidos con exactitud conforme a la Traducción del Nuevo Mundo (edición de estudio en español) tal como aparece en ese portal.
+> «23 Y ese día no me harán ninguna pregunta. De verdad les aseguro que, si le piden cualquier cosa al Padre en mi nombre, él se la dará. 24 Hasta ahora no han pedido ni una sola cosa en mi nombre. Pidan y recibirán, para que su felicidad sea completa.»
