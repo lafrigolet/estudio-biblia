@@ -1,102 +1,102 @@
 ## Versículos de la Lección 20 — Traducción del Nuevo Mundo
+### *«Cómo está organizada la congregación»*
+
+Los versículos de esta lección son: 1 Corintios 14:33 · Efesios 5:23 · Mateo 24:45-47 · Hechos 15:2 · 1 Pedro 5:1, 2 · 1 Timoteo 3:1-10 · 1 Timoteo 3:12 · Tito 1:5-9 · Salmo 148:12, 13 · Mateo 11:28-30 · 1 Pedro 5:1-3 · Mateo 23:8-12 · Hebreos 13:17 · Lucas 16:10
 
 ---
 
 ### 📌 1 Corintios 14:33
-*(Base de la introducción: Dios es un Dios de orden)*
+*(Jehová es un Dios de orden y paz, no de desorden)*
 
-«Porque Dios no es un Dios de desorden, sino de paz.»
+> «Porque Dios no es un Dios de desorden, sino de paz. Al igual que pasa en todas las congregaciones de los santos,»
 
 ---
 
 ### 📌 Efesios 5:23
-*(Cristo es cabeza de la congregación)*
+*(Jesucristo es la cabeza de la congregación cristiana)*
 
-«porque el esposo es cabeza de su esposa, tal como el Cristo es cabeza de la congregación, salvador de este cuerpo.»
+> «porque el esposo es cabeza de su esposa, tal como el Cristo es cabeza de la congregación, salvador de este cuerpo.»
 
 ---
 
 ### 📌 Mateo 24:45-47
-*(El "esclavo fiel y prudente" = Cuerpo Gobernante)*
+*(Jesús nombró al esclavo fiel y prudente para dar alimento espiritual)*
 
-«45 ¿Quién es en realidad el esclavo fiel y prudente a quien su amo puso a cargo de los sirvientes de la casa para darles su alimento al tiempo debido? 46 ¡Feliz ese esclavo si su amo, cuando venga, lo encuentra haciendo eso! 47 Les aseguro que lo pondrá a cargo de todos sus bienes.»
+> «45 "¿Quién es en realidad el esclavo fiel y prudente a quien su amo puso a cargo de los sirvientes de la casa para darles su alimento al tiempo debido? 46 ¡Feliz ese esclavo si su amo, cuando venga, lo encuentra haciendo eso! 47 Les aseguro que lo pondrá a cargo de todos sus bienes.»
 
 ---
 
 ### 📌 Hechos 15:2
-*(Precedente del Cuerpo Gobernante en el siglo primero)*
+*(El cuerpo gobernante del siglo primero resolvía asuntos doctrinales)*
 
-«Pero Pablo y Bernabé no estaban de acuerdo con ellos y, tras mucha discusión, se hicieron preparativos para que Pablo, Bernabé y algunos más subieran adonde estaban los apóstoles y los ancianos de Jerusalén para hablar de este asunto.»
-
----
-
-### 📌 1 Pedro 5:1-2
-*(La labor de los ancianos: de buena gana, no por dinero)*
-
-Estos versículos los cita la lección con las palabras "de buena gana ante Dios" y "no por amor a ganancias deshonestas, sino con empeño". Según la TNM:
-
-> «1 A los ancianos que están entre ustedes les hago este llamado, yo que soy un coanciano y testigo de los sufrimientos del Cristo, y que también participo de la gloria que ha de revelarse: 2 Cuiden como pastores el rebaño de Dios que está bajo su cuidado, supervisándolo, no porque estén obligados sino de buena gana ante Dios; no por amor a ganancias deshonestas, sino con empeño.»
+> «Pero Pablo y Bernabé no estaban de acuerdo con ellos y, tras mucha discusión, se hicieron preparativos para que Pablo, Bernabé y algunos más subieran adonde estaban los apóstoles y los ancianos de Jerusalén para hablar de este asunto.»
 
 ---
 
-### 📌 1 Timoteo 3:1-10, 12 y Tito 1:5-9
-*(Requisitos bíblicos para ancianos y siervos ministeriales)*
+### 📌 1 Pedro 5:1, 2
+*(Los ancianos pastorean el rebaño con buena gana y sin interés)*
 
-**1 Timoteo 3:1-2:**
-> «1 Esta es una declaración fiel: Si alguien aspira a ser supervisor, desea una obra excelente. 2 Por lo tanto, el supervisor debe ser irreprensible, esposo de una sola esposa, sobrio, sensato, de buen comportamiento, hospitalario, capacitado para enseñar...»
-
-**Tito 1:5-7:**
-> «5 La razón por la que te dejé en Creta fue para que pusieras en orden las cosas que faltaban y nombraras ancianos en cada ciudad, según las instrucciones que te di. 6 Debe ser alguien irreprensible, esposo de una sola esposa, que tenga hijos creyentes que no estén bajo acusación de libertinaje ni sean rebeldes. 7 Porque el supervisor, como administrador de Dios, debe ser irreprensible, no arrogante, no irascible, no dado a emborracharse, no pendenciero, no codicioso de ganancias deshonestas...»
+> «5 Por lo tanto, yo que también soy anciano, testigo de los sufrimientos del Cristo y uno de los que también recibirá la gloria que se va a revelar, les hago esta súplica a los ancianos que hay entre ustedes: 2 pastoreen el rebaño de Dios que está a su cuidado, sirviendo de superintendentes; no lo hagan por obligación, sino de buena gana ante Dios; tampoco lo hagan por amor a ganancias deshonestas, sino con empeño,»
 
 ---
 
-### 📌 Salmo 148:12-13
-*(Todos alaban el nombre de Jehová)*
+### 📌 1 Timoteo 3:1-10
+*(Requisitos bíblicos para superintendentes y siervos ministeriales)*
 
-> «12 los jóvenes y también las doncellas, los ancianos junto con los muchachos. 13 Que alaben el nombre de Jehová, porque solo su nombre es excelso; su majestad es sobre la tierra y los cielos.»
+> «3 Esta declaración es digna de confianza: si un hombre está esforzándose por ser superintendente, desea una labor muy buena. 2 Por lo tanto, el superintendente debe ser irreprochable, esposo de una sola mujer y moderado en sus hábitos; debe tener buen juicio, ser ordenado y hospitalario, y estar capacitado para enseñar. 3 No debe ser borracho ni violento, sino razonable. No debe ser conflictivo ni amar el dinero. 4 Debe ser un hombre que dirija bien a su familia y que tenga a sus hijos en sujeción a él con toda seriedad 5 (porque, si un hombre no sabe dirigir a su propia familia, ¿cómo cuidará de la congregación de Dios?). 6 No debe ser un hombre recién convertido, para que no se llene de orgullo y reciba la misma condena que recibió el Diablo. 7 Además, debe tener una buena reputación entre la gente de afuera, para que no se le pueda reprochar nada y no caiga en una trampa del Diablo. 8 Igualmente, los siervos ministeriales deben ser serios; no deben ser de lengua doble ni beber mucho vino ni codiciar ganancias deshonestas, 9 sino que deben aferrarse al secreto sagrado de la fe con una conciencia limpia. 10 Además, que primero se ponga a prueba su capacidad; entonces, al estar libres de acusación, que sirvan como ministros.»
+
+---
+
+### 📌 1 Timoteo 3:12
+*(Los siervos ministeriales dirigen bien a sus familias)*
+
+> «Que los siervos ministeriales sean esposos de una sola mujer y dirijan bien a sus hijos y a sus propias familias.»
+
+---
+
+### 📌 Tito 1:5-9
+*(Cualidades del anciano cristiano según las instrucciones de Pablo)*
+
+> «5 Te dejé en Creta para que corrigieras las cosas defectuosas y nombraras ancianos en cada ciudad, de acuerdo con las instrucciones que te di: 6 el anciano debe ser un hombre libre de acusación, esposo de una sola mujer y con hijos creyentes a los que no se les pueda acusar de desenfreno ni de rebeldía. 7 Porque, como mayordomo de Dios, el superintendente debe estar libre de acusación, y no debe ser terco ni enojarse con facilidad, no debe ser borracho ni violento, ni debe codiciar ganancias deshonestas. 8 Más bien, debe ser hospitalario, amar lo que es bueno, tener buen juicio, ser justo y leal, y tener autocontrol. 9 Debe aferrarse a la fiel palabra en lo relacionado con su arte de enseñar, para que pueda animar a otros con la enseñanza sana y censurar a los que la contradicen.»
+
+---
+
+### 📌 Salmo 148:12, 13
+*(Todos en la congregación alaban el nombre de Jehová)*
+
+> «12 muchachos y muchachas, ancianos y jóvenes juntos. 13 Que todos ellos alaben el nombre de Jehová, porque solo su nombre es sublime, imposible de alcanzar. Su majestad está por encima de la tierra y del cielo.»
 
 ---
 
 ### 📌 Mateo 11:28-30
-*(Jesús: un líder que ofrece alivio)*
+*(Jesús es un líder apacible que alivia cargas)*
 
-> «28 Vengan a mí, todos los que se sienten cansados y agobiados, y yo los aliviaré. 29 Tomen mi yugo sobre ustedes y aprendan de mí, porque soy manso y humilde de corazón, y encontrarán alivio para sus almas. 30 Porque mi yugo es bueno y mi carga es ligera.»
-
----
-
-### 📌 Isaías 32:2
-*(Los ancianos como refugio y amparo)*
-
-> «Y cada uno de ellos será como un refugio contra el viento y como protección contra la tormenta, como arroyos de agua en un lugar seco, como la sombra de una roca grande en un territorio exhausto.»
+> «28 Vengan a mí, todos ustedes, que trabajan duro y están sobrecargados, y yo los aliviaré. 29 Pónganse bajo mi yugo y aprendan de mí, porque soy apacible y humilde de corazón. Conmigo encontrarán alivio. 30 Porque mi yugo es fácil de llevar y mi carga pesa poco".»
 
 ---
 
 ### 📌 1 Pedro 5:1-3
-*(Los ancianos sirven como ejemplos, no como señores)*
+*(Los ancianos sirven sin dominar, siendo ejemplos para el rebaño)*
 
-> «1 A los ancianos que están entre ustedes les hago este llamado, yo que soy un coanciano [...] 2 Cuiden como pastores el rebaño de Dios que está bajo su cuidado, supervisándolo, no porque estén obligados sino de buena gana ante Dios; no por amor a ganancias deshonestas, sino con empeño; 3 no dominando a los que son la herencia de Dios, sino siendo ejemplos para el rebaño.»
+> «5 Por lo tanto, yo que también soy anciano, testigo de los sufrimientos del Cristo y uno de los que también recibirá la gloria que se va a revelar, les hago esta súplica a los ancianos que hay entre ustedes: 2 pastoreen el rebaño de Dios que está a su cuidado, sirviendo de superintendentes; no lo hagan por obligación, sino de buena gana ante Dios; tampoco lo hagan por amor a ganancias deshonestas, sino con empeño, 3 ni lo hagan actuando como si fueran los amos de los que son la herencia de Dios, sino convirtiéndose en ejemplos para el rebaño.»
 
 ---
 
 ### 📌 Mateo 23:8-12
-*(Cómo deben ser los que dirigen: servicio humilde)*
+*(Todos los cristianos son hermanos; solo Cristo es el Líder)*
 
-> «8 Pero ustedes no deben llamarse Rabí, porque uno solo es su Maestro, y todos ustedes son hermanos. 9 Además, no llamen "padre" a ningún hombre en la tierra, porque uno solo es su Padre, el Celestial. 10 Tampoco se dejen llamar "líderes", porque su Líder es uno solo, el Cristo. 11 El más grande de ustedes será su ministro. 12 El que se exalta será humillado, y el que se humilla será exaltado.»
+> «8 Pero ustedes no dejen que los llamen rabí, porque uno solo es su Maestro y ustedes son todos hermanos. 9 Además, no llamen padre a nadie en la tierra, porque uno solo es su Padre, el del cielo. 10 Tampoco permitan que los llamen líder, porque su Líder es uno, el Cristo. 11 Más bien, que el más grande entre ustedes sirva a los demás. 12 El que se engrandece será humillado, pero el que actúa con humildad será engrandecido.»
 
 ---
 
 ### 📌 Hebreos 13:17
-*(Colaborar con los ancianos: ser obedientes y sumisos)*
+*(Somos obedientes y sumisos a los que dirigen la congregación)*
 
-> «Sean obedientes a quienes los dirigen y sean sumisos, porque ellos cuidan de sus almas como quienes tendrán que rendir cuentas, para que puedan hacerlo con alegría y no con angustia, porque eso no les sería de provecho.»
+> «Sean obedientes y sumisos a los que los dirigen, porque ellos están cuidando de ustedes y van a rendir cuentas por eso. Así, ellos lo harán felices y no con suspiros, porque esto los perjudicaría a ustedes.»
 
 ---
 
 ### 📌 Lucas 16:10
-*(Fidelidad también en las cosas pequeñas)*
+*(La fidelidad en lo pequeño prepara para responsabilidades mayores)*
 
-> «El que es fiel en lo mínimo también es fiel en lo mucho, y el que es injusto en lo mínimo también es injusto en lo mucho.»
-
----
-
-> **Nota:** Los versículos de 1 Timoteo 3, Tito 1, Salmo 148, Mateo 11, Isaías 32, Mateo 23 y Lucas 16 están tomados directamente del texto de la TNM tal como aparece en jw.org, y coinciden fielmente con las citas que hace la lección 20. Los versículos de 1 Pedro 5 fueron recuperados del mismo portal durante la consulta.
+> «La persona fiel en lo mínimo también es fiel en lo mucho, y la persona injusta en lo mínimo también es injusta en lo mucho.»
