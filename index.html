@@ -1051,11 +1051,15 @@
       window.navigator.standalone === true;
     const ua = navigator.userAgent || '';
     const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-    const isIOSSafari = isIOS && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+    // iPadOS 13+ se identifica como Mac — distinguir por soporte táctil
+    const isIPadOS = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+    const isAppleTouch = isIOS || isIPadOS;
+    const isIOSSafari = isAppleTouch && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
     const isAndroid = /Android/.test(ua);
+    const isMobileOrTablet = isAppleTouch || isAndroid;
 
-    // Si ya está instalado, o ya se mostró, no hacer nada
-    if (isStandalone || localStorage.getItem(SEEN_KEY)) return;
+    // Solo móviles/tablets. No mostrar si ya instalado o ya se descartó.
+    if (!isMobileOrTablet || isStandalone || localStorage.getItem(SEEN_KEY)) return;
 
     let deferredPrompt = null;
 
@@ -1102,17 +1106,6 @@
       `;
     }
 
-    function renderGenericInstructions() {
-      body.innerHTML = `
-        <div class="bg-parchment-100/60 dark:bg-ink-900/40 rounded-lg p-4 font-sans text-sm text-ink-600 dark:text-parchment-200 space-y-2">
-          <p>Desde el menú del navegador, busque la opción:</p>
-          <ul class="list-disc list-inside space-y-1 text-ink-500 dark:text-parchment-300">
-            <li><strong>«Instalar aplicación»</strong> o <strong>«Añadir a pantalla de inicio»</strong>.</li>
-          </ul>
-          <p class="text-xs text-ink-400 dark:text-parchment-400 pt-1">En Chrome/Edge aparecerá también un icono de instalación en la barra de direcciones.</p>
-        </div>
-      `;
-    }
 
     function showModal() {
       modal.classList.remove('hidden');
@@ -1143,23 +1136,18 @@
       if (e.key === 'Escape' && !modal.classList.contains('hidden')) hideModal();
     });
 
-    // iOS Safari no dispara beforeinstallprompt — mostrar instrucciones manualmente
+    // iOS/iPadOS Safari no dispara beforeinstallprompt — mostrar instrucciones manualmente.
+    // En iOS con otros navegadores (Chrome, Firefox…) no se puede añadir a pantalla de inicio,
+    // así que no mostramos nada para no confundir al usuario.
     if (isIOSSafari) {
       setTimeout(() => {
         renderIOSInstructions();
         showModal();
       }, 1500);
-      return;
     }
-
-    // Fallback: si tras 3 s no llegó beforeinstallprompt (p.ej. Firefox desktop),
-    // mostrar instrucciones genéricas para que el usuario sepa que puede instalar.
-    setTimeout(() => {
-      if (!deferredPrompt && !localStorage.getItem(SEEN_KEY)) {
-        renderGenericInstructions();
-        showModal();
-      }
-    }, 3000);
+    // En Android esperamos a `beforeinstallprompt`; si el navegador no lo emite
+    // (Firefox Android, modo incógnito, criterios PWA no cumplidos…), simplemente
+    // no aparece el modal.
   })();
 
   // ============ PRIVACY MODAL ============
