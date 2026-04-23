@@ -8,7 +8,7 @@ Los versículos de esta lección son: Salmo 25:14 · Santiago 4:8 · 1 Pedro 5:7
 ### ✦ Salmo 25:14
 *(Jehová ofrece una amistad íntima a los que le temen)*
 
-«La amistad íntima con Jehová es para quienes le temen, y él les da a conocer su pacto.»
+> «La amistad íntima con Jehová es para quienes le temen, y él les da a conocer su pacto.»
 
 ---
 

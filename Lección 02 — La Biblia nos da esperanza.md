@@ -8,7 +8,7 @@ Los versículos de esta lección son: Jeremías 29:11-12 · Apocalipsis 21:4 · 
 ### ✦ Jeremías 29:11-12
 *(Dios tiene en mente darnos un futuro y una esperanza)*
 
-«11 "Porque sé muy bien lo que tengo en mente para ustedes —afirma Jehová—. Quiero que tengan paz, no calamidad. Quiero darles un futuro y una esperanza. 12 Ustedes me llamarán, acudirán a mí en oración, y yo los escucharé."»
+> «11 "Porque sé muy bien lo que tengo en mente para ustedes —afirma Jehová—. Quiero que tengan paz, no calamidad. Quiero darles un futuro y una esperanza. 12 Ustedes me llamarán, acudirán a mí en oración, y yo los escucharé."»
 
 ---
 

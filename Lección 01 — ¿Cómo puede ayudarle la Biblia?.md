@@ -8,14 +8,14 @@ Los versículos de esta lección son: 2 Timoteo 3:16 · Salmo 119:105 · Mateo 7
 ### ✦ 2 Timoteo 3:16
 *(Toda la Biblia es útil — fue inspirada por Dios)*
 
-«Toda la Escritura está inspirada por Dios y es útil para enseñar, para censurar, para rectificar las cosas y para educar de acuerdo con lo que está bien.»
+> «Toda la Escritura está inspirada por Dios y es útil para enseñar, para censurar, para rectificar las cosas y para educar de acuerdo con lo que está bien.»
 
 ---
 
 ### ✦ Salmo 119:105
 *(La Biblia nos guía como una lámpara en el camino)*
 
-«Tu palabra es una lámpara para mi pie y una luz para mi sendero.»
+> «Tu palabra es una lámpara para mi pie y una luz para mi sendero.»
 
 ---
 

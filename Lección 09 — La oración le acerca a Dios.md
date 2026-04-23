@@ -8,7 +8,7 @@ Los versículos de esta lección son: Mateo 6:9 · 1 Juan 5:14 · Mateo 6:9-13 �
 ### ✦ Mateo 6:9
 *(Jesús enseñó a dirigir las oraciones a «Padre nuestro»)*
 
-«Ustedes deben orar de esta manera: "Padre nuestro que estás en los cielos, que tu nombre sea santificado.»
+> «Ustedes deben orar de esta manera: "Padre nuestro que estás en los cielos, que tu nombre sea santificado.»
 
 ---
 

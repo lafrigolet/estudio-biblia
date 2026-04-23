@@ -8,7 +8,7 @@ Los versículos de esta lección son: 1 Tesalonicenses 2:13 · 2 Pedro 1:21 · 2
 ### ✦ 1 Tesalonicenses 2:13
 *(La Biblia no es palabra de hombres, sino verdadera Palabra de Dios)*
 
-«Por eso nosotros también le damos constantemente gracias a Dios, porque, cuando ustedes recibieron la palabra de Dios —que oyeron por medio de nosotros—, no la aceptaron como palabra de hombres, sino como lo que de verdad es, como palabra de Dios, la cual también está actuando en ustedes, los creyentes.»
+> «Por eso nosotros también le damos constantemente gracias a Dios, porque, cuando ustedes recibieron la palabra de Dios —que oyeron por medio de nosotros—, no la aceptaron como palabra de hombres, sino como lo que de verdad es, como palabra de Dios, la cual también está actuando en ustedes, los creyentes.»
 
 ---
 

@@ -8,7 +8,7 @@ Los versículos de esta lección son: Salmo 26:12 · Nehemías 8:8 · Isaías 48
 ### ✦ Salmo 26:12
 *(En la congregación alabamos a Jehová)*
 
-«Mis pies están en terreno firme; en la gran congregación alabaré a Jehová.»
+> «Mis pies están en terreno firme; en la gran congregación alabaré a Jehová.»
 
 ---
 

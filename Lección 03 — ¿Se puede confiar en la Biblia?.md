@@ -36,7 +36,7 @@ Los versículos de esta lección son: Eclesiastés 12:10 · Lucas 1:3 · Lucas 3
 ### ✦ Isaías 46:10
 *(Solo Dios puede predecir el futuro con exactitud)*
 
-«Desde el principio, yo predigo el fin y, desde mucho tiempo atrás, cosas que todavía no se han hecho. Yo digo: "Mi decisión se mantendrá, y haré cualquier cosa que yo desee".»
+> «Desde el principio, yo predigo el fin y, desde mucho tiempo atrás, cosas que todavía no se han hecho. Yo digo: "Mi decisión se mantendrá, y haré cualquier cosa que yo desee".»
 
 ---
 
@@ -71,7 +71,7 @@ Los versículos de esta lección son: Eclesiastés 12:10 · Lucas 1:3 · Lucas 3
 ### ✦ 2 Timoteo 3:1
 *(La Biblia llama a nuestra época "los últimos días")*
 
-«Pero debes saber que en los últimos días vendrán tiempos críticos y difíciles de soportar.»
+> «Pero debes saber que en los últimos días vendrán tiempos críticos y difíciles de soportar.»
 
 ---
 
@@ -85,4 +85,4 @@ Los versículos de esta lección son: Eclesiastés 12:10 · Lucas 1:3 · Lucas 3
 ### ✦ 2 Timoteo 3:1-5
 *(Descripción de las actitudes de las personas en los últimos días)*
 
-«1 Pero debes saber que en los últimos días vendrán tiempos críticos y difíciles de soportar. 2 Porque la gente solo se amará a sí misma; serán amantes del dinero, fanfarrones, arrogantes, blasfemos, desobedientes a los padres, desagradecidos y desleales, 3 no tendrán cariño natural, no estarán dispuestos a llegar a ningún acuerdo, serán calumniadores, no tendrán autocontrol, serán feroces, no amarán lo que es bueno, 4 serán traicioneros y testarudos, estarán llenos de orgullo, amarán los placeres en vez de a Dios 5 y aparentarán tener devoción a Dios, pero en realidad estarán negando el poder de esa devoción. Aléjate de ellos.»
+> «1 Pero debes saber que en los últimos días vendrán tiempos críticos y difíciles de soportar. 2 Porque la gente solo se amará a sí misma; serán amantes del dinero, fanfarrones, arrogantes, blasfemos, desobedientes a los padres, desagradecidos y desleales, 3 no tendrán cariño natural, no estarán dispuestos a llegar a ningún acuerdo, serán calumniadores, no tendrán autocontrol, serán feroces, no amarán lo que es bueno, 4 serán traicioneros y testarudos, estarán llenos de orgullo, amarán los placeres en vez de a Dios 5 y aparentarán tener devoción a Dios, pero en realidad estarán negando el poder de esa devoción. Aléjate de ellos.»

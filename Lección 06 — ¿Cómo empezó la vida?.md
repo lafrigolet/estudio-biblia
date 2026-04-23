@@ -8,7 +8,7 @@ Los versículos de esta lección son: Salmo 36:9 · Génesis 1:1 · Génesis 1:2
 ### ✦ Salmo 36:9
 *(Dios es la fuente de la vida)*
 
-«En ti está la fuente de la vida; gracias a tu luz podemos ver la luz.»
+> «En ti está la fuente de la vida; gracias a tu luz podemos ver la luz.»
 
 ---
 

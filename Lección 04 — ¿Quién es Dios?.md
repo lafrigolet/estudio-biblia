@@ -15,14 +15,14 @@ Los versículos de esta lección son: 2 Crónicas 2:5 · Isaías 42:5, 8 · Éxo
 ### ✦ Isaías 42:5, 8
 *(Jehová se presenta a sí mismo y declara que su nombre le pertenece solo a él)*
 
-«5 Esto es lo que dice el Dios Jehová, el que creó los cielos y los extendió, el que extendió la tierra con todo lo que produce, el que da aliento al pueblo que hay en ella y espíritu a los que andan por ella [...] 8 "Yo soy Jehová. Ese es mi nombre; mi gloria no se la doy a nadie ni doy la alabanza que me pertenece a imágenes esculpidas."»
+> «5 Esto es lo que dice el Dios Jehová, el que creó los cielos y los extendió, el que extendió la tierra con todo lo que produce, el que da aliento al pueblo que hay en ella y espíritu a los que andan por ella [...] 8 "Yo soy Jehová. Ese es mi nombre; mi gloria no se la doy a nadie ni doy la alabanza que me pertenece a imágenes esculpidas."»
 
 ---
 
 ### ✦ Éxodo 3:15
 *(Jehová quiere que su nombre sea conocido de generación en generación)*
 
-«Entonces Dios le dijo otra vez a Moisés: "Esto es lo que habrás de decirles a los israelitas: 'Jehová, el Dios de sus antepasados, el Dios de Abrahán, el Dios de Isaac y el Dios de Jacob, me ha enviado a ustedes'. Este es mi nombre para siempre, y así es como se me recordará de generación en generación."»
+> «Entonces Dios le dijo otra vez a Moisés: "Esto es lo que habrás de decirles a los israelitas: 'Jehová, el Dios de sus antepasados, el Dios de Abrahán, el Dios de Isaac y el Dios de Jacob, me ha enviado a ustedes'. Este es mi nombre para siempre, y así es como se me recordará de generación en generación."»
 
 ---
 
@@ -36,7 +36,7 @@ Los versículos de esta lección son: 2 Crónicas 2:5 · Isaías 42:5, 8 · Éxo
 ### ✦ Salmo 83:18
 *(El nombre de Jehová declara que él es el Altísimo sobre toda la tierra)*
 
-«Que la gente sepa que tu nombre es Jehová, que solo tú eres el Altísimo sobre toda la tierra.»
+> «Que la gente sepa que tu nombre es Jehová, que solo tú eres el Altísimo sobre toda la tierra.»
 
 ---
 
@@ -50,7 +50,7 @@ Los versículos de esta lección son: 2 Crónicas 2:5 · Isaías 42:5, 8 · Éxo
 ### ✦ Salmo 90:2
 *(Jehová siempre ha existido y siempre existirá)*
 
-«Antes de que nacieran las montañas o produjeras la tierra y el terreno productivo, desde siempre y para siempre, tú eres Dios.»
+> «Antes de que nacieran las montañas o produjeras la tierra y el terreno productivo, desde siempre y para siempre, tú eres Dios.»
 
 ---
 
@@ -64,7 +64,7 @@ Los versículos de esta lección son: 2 Crónicas 2:5 · Isaías 42:5, 8 · Éxo
 ### ✦ Romanos 10:13
 *(Es esencial invocar el nombre de Jehová para obtener la salvación)*
 
-«Todo el que invoque el nombre de Jehová será salvado.»
+> «Todo el que invoque el nombre de Jehová será salvado.»
 
 ---
 

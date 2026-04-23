@@ -8,7 +8,7 @@ Los versículos de esta lección son: Juan 4:24 · Salmo 37:28 · Santiago 5:11 
 ### ✦ Juan 4:24
 *(Dios es un espíritu y sus adoradores deben adorarlo con espíritu y con verdad)*
 
-«Dios es un espíritu, y los que lo adoran tienen que adorarlo con espíritu y con verdad.»
+> «Dios es un espíritu, y los que lo adoran tienen que adorarlo con espíritu y con verdad.»
 
 ---
 

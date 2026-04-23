@@ -8,7 +8,7 @@ Los versículos de esta lección son: Salmo 1:1-3 · Josué 1:8 · Efesios 5:16 
 ### ✦ Salmo 1:1-3
 *(Quien lee la Biblia y medita en ella será feliz y tendrá éxito en la vida)*
 
-«1 Feliz el hombre que no anda según los consejos de los malvados, que no se detiene en el camino de los pecadores, que no se sienta en el asiento de los burlones 2 sino que disfruta con la ley de Jehová; día y noche lee su ley y medita en ella. 3 Será como un árbol plantado junto a corrientes de agua, un árbol que da fruto a su tiempo y cuyas hojas no se marchitan. Todo lo que él haga tendrá éxito.»
+> «1 Feliz el hombre que no anda según los consejos de los malvados, que no se detiene en el camino de los pecadores, que no se sienta en el asiento de los burlones 2 sino que disfruta con la ley de Jehová; día y noche lee su ley y medita en ella. 3 Será como un árbol plantado junto a corrientes de agua, un árbol que da fruto a su tiempo y cuyas hojas no se marchitan. Todo lo que él haga tendrá éxito.»
 
 ---
 
