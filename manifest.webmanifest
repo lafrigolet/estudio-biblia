@@ -1,0 +1,29 @@
+{
+  "name": "Disfrute de la vida para siempre — Estudio bíblico",
+  "short_name": "Estudio Biblia",
+  "description": "Los versículos de las 60 lecciones del libro \"Disfrute de la vida para siempre\" en la Traducción del Nuevo Mundo.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "theme_color": "#8b6828",
+  "background_color": "#fdfaf0",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["education", "books", "lifestyle"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#fdfaf0"/>
+      <stop offset="70%" stop-color="#f5ecd7"/>
+      <stop offset="100%" stop-color="#ecdcb0"/>
+    </radialGradient>
+    <linearGradient id="star" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#c5a150"/>
+      <stop offset="50%" stop-color="#a88333"/>
+      <stop offset="100%" stop-color="#6b4e1f"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fdfaf0" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#fdfaf0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Rounded square background (safe zone ≈ 10% margin) -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+
+  <!-- Decorative outer frame -->
+  <rect x="40" y="40" width="432" height="432" rx="72" fill="none" stroke="#a88333" stroke-width="1.5" opacity="0.35"/>
+  <rect x="52" y="52" width="408" height="408" rx="64" fill="none" stroke="#a88333" stroke-width="0.75" opacity="0.2"/>
+
+  <!-- Four-pointed sparkle (✦) -->
+  <path d="M 256 92 L 282 230 L 420 256 L 282 282 L 256 420 L 230 282 L 92 256 L 230 230 Z"
+        fill="url(#star)"/>
+
+  <!-- Center highlight -->
+  <circle cx="256" cy="256" r="18" fill="url(#glow)"/>
+
+  <!-- Small accent sparkles -->
+  <path d="M 140 140 L 146 158 L 164 164 L 146 170 L 140 188 L 134 170 L 116 164 L 134 158 Z"
+        fill="#a88333" opacity="0.6"/>
+  <path d="M 372 372 L 378 390 L 396 396 L 378 402 L 372 420 L 366 402 L 348 396 L 366 390 Z"
+        fill="#a88333" opacity="0.6"/>
+</svg>

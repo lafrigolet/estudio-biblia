@@ -2,8 +2,19 @@
 <html lang="es" class="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Disfrute de la vida para siempre — Estudio bíblico</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#fdfaf0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100e0a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Estudio Biblia">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="Los versículos de las 60 lecciones del libro «Disfrute de la vida para siempre» en la Traducción del Nuevo Mundo.">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -309,6 +320,39 @@
   <span class="ornament"></span>
   Textos bíblicos de la <em>Traducción del Nuevo Mundo</em>.
 </footer>
+
+<!-- Install PWA modal -->
+<div id="installModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+  <div id="installBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+  <div id="installCard" class="relative max-w-md w-full bg-parchment-50 dark:bg-ink-800 rounded-xl shadow-2xl border border-parchment-200 dark:border-ink-700 p-6 sm:p-8 opacity-0 scale-95 transition-all duration-300">
+    <button id="installClose" class="absolute top-3 right-3 p-1.5 rounded-full hover:bg-parchment-100 dark:hover:bg-ink-700 text-ink-500 dark:text-parchment-300" aria-label="Cerrar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="text-center">
+      <div class="flex justify-center mb-3">
+        <img src="icon.svg" alt="" class="w-16 h-16 rounded-lg shadow-md">
+      </div>
+      <div class="ornament"></div>
+      <h3 id="installTitle" class="font-serif text-2xl text-ink-700 dark:text-parchment-100 mb-2">
+        Instale la aplicación
+      </h3>
+      <p class="text-sm font-sans text-ink-500 dark:text-parchment-300 leading-relaxed mb-5">
+        Añada <em class="text-parchment-700 dark:text-parchment-300">Disfrute de la vida para siempre</em> a su dispositivo para leerlo más rápido y sin conexión.
+      </p>
+
+      <!-- Dynamic content area: install button OR iOS instructions -->
+      <div id="installBody" class="text-left"></div>
+
+      <button id="installDismiss" class="mt-5 w-full text-xs font-sans uppercase tracking-wider text-ink-400 dark:text-parchment-400 hover:text-ink-700 dark:hover:text-parchment-100 py-2">
+        Ahora no
+      </button>
+    </div>
+  </div>
+</div>
 
 <script>
   // ============ LESSON DATA ============
@@ -677,6 +721,158 @@
   renderWelcomeCards();
   window.addEventListener('hashchange', route);
   route();
+
+  // ============ SERVICE WORKER (PWA) ============
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then((reg) => {
+        // Detectar actualización y ofrecer recarga
+        reg.addEventListener('updatefound', () => {
+          const nw = reg.installing;
+          if (!nw) return;
+          nw.addEventListener('statechange', () => {
+            if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+              // Hay una versión nueva; activar inmediatamente
+              nw.postMessage('SKIP_WAITING');
+            }
+          });
+        });
+      }).catch(() => {/* silencioso */});
+
+      let reloading = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (reloading) return;
+        reloading = true;
+        window.location.reload();
+      });
+    });
+  }
+
+  // ============ INSTALL PROMPT MODAL ============
+  (function initInstallPrompt() {
+    const SEEN_KEY = 'pwa-install-prompt-seen';
+    const modal = document.getElementById('installModal');
+    const backdrop = document.getElementById('installBackdrop');
+    const card = document.getElementById('installCard');
+    const body = document.getElementById('installBody');
+    const btnClose = document.getElementById('installClose');
+    const btnDismiss = document.getElementById('installDismiss');
+
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+    const ua = navigator.userAgent || '';
+    const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    const isIOSSafari = isIOS && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+    const isAndroid = /Android/.test(ua);
+
+    // Si ya está instalado, o ya se mostró, no hacer nada
+    if (isStandalone || localStorage.getItem(SEEN_KEY)) return;
+
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      renderInstallButton();
+      showModal();
+    });
+
+    window.addEventListener('appinstalled', () => {
+      localStorage.setItem(SEEN_KEY, '1');
+      hideModal();
+    });
+
+    function renderInstallButton() {
+      body.innerHTML = `
+        <button id="installDo" class="w-full px-5 py-3 rounded-lg bg-parchment-600 hover:bg-parchment-700 text-parchment-50 font-sans font-medium transition-colors shadow-md">
+          Instalar aplicación
+        </button>
+      `;
+      document.getElementById('installDo').addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        try {
+          await deferredPrompt.userChoice;
+        } catch {}
+        deferredPrompt = null;
+        localStorage.setItem(SEEN_KEY, '1');
+        hideModal();
+      });
+    }
+
+    function renderIOSInstructions() {
+      body.innerHTML = `
+        <div class="bg-parchment-100/60 dark:bg-ink-900/40 rounded-lg p-4 font-sans text-sm text-ink-600 dark:text-parchment-200 space-y-2">
+          <p>En iPhone/iPad con Safari:</p>
+          <ol class="list-decimal list-inside space-y-1 text-ink-500 dark:text-parchment-300">
+            <li>Toque el botón <strong>Compartir</strong> <span aria-hidden="true">􀈂</span> en la barra inferior.</li>
+            <li>Deslice y elija <strong>«Añadir a pantalla de inicio»</strong>.</li>
+            <li>Confirme con <strong>«Añadir»</strong>.</li>
+          </ol>
+        </div>
+      `;
+    }
+
+    function renderGenericInstructions() {
+      body.innerHTML = `
+        <div class="bg-parchment-100/60 dark:bg-ink-900/40 rounded-lg p-4 font-sans text-sm text-ink-600 dark:text-parchment-200 space-y-2">
+          <p>Desde el menú del navegador, busque la opción:</p>
+          <ul class="list-disc list-inside space-y-1 text-ink-500 dark:text-parchment-300">
+            <li><strong>«Instalar aplicación»</strong> o <strong>«Añadir a pantalla de inicio»</strong>.</li>
+          </ul>
+          <p class="text-xs text-ink-400 dark:text-parchment-400 pt-1">En Chrome/Edge aparecerá también un icono de instalación en la barra de direcciones.</p>
+        </div>
+      `;
+    }
+
+    function showModal() {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      // next tick para activar transición
+      requestAnimationFrame(() => {
+        backdrop.classList.replace('opacity-0', 'opacity-100');
+        card.classList.remove('opacity-0', 'scale-95');
+        card.classList.add('opacity-100', 'scale-100');
+      });
+    }
+
+    function hideModal() {
+      backdrop.classList.replace('opacity-100', 'opacity-0');
+      card.classList.add('opacity-0', 'scale-95');
+      card.classList.remove('opacity-100', 'scale-100');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 300);
+      localStorage.setItem(SEEN_KEY, '1');
+    }
+
+    btnClose.addEventListener('click', hideModal);
+    btnDismiss.addEventListener('click', hideModal);
+    backdrop.addEventListener('click', hideModal);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) hideModal();
+    });
+
+    // iOS Safari no dispara beforeinstallprompt — mostrar instrucciones manualmente
+    if (isIOSSafari) {
+      setTimeout(() => {
+        renderIOSInstructions();
+        showModal();
+      }, 1500);
+      return;
+    }
+
+    // Fallback: si tras 3 s no llegó beforeinstallprompt (p.ej. Firefox desktop),
+    // mostrar instrucciones genéricas para que el usuario sepa que puede instalar.
+    setTimeout(() => {
+      if (!deferredPrompt && !localStorage.getItem(SEEN_KEY)) {
+        renderGenericInstructions();
+        showModal();
+      }
+    }, 3000);
+  })();
 </script>
 </body>
 </html>
