@@ -115,7 +115,7 @@ Lo crítico: **el servidor toca el almacén en cada petición autenticada** (pas
 
 ### La cookie: el detalle que mucha gente ignora
 
-El identificador viaja en una cookie. Las flags importan **mucho**:
+El identificador viaja en una cookie. Las flags de configuración de las cookies importan **mucho**:
 
 | Flag | Qué hace | Por qué importa |
 |---|---|---|
