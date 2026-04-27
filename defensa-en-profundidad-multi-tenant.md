@@ -1,534 +1,637 @@
-# Defensa en profundidad en sistemas multi-tenant: JWT + Redis + RLS
+# Autenticación web: de sesiones clásicas a JWT con refresh tokens
 
-> **Tema para 2DAM** — Desarrollo de Aplicaciones Multiplataforma
-> **Módulo de referencia:** Programación de servicios y procesos / Acceso a datos / Desarrollo web en entorno servidor
-
-## Objetivos de aprendizaje
-
-Al finalizar el tema, el alumno será capaz de:
-
-1. Explicar qué es un sistema **multi-tenant** y por qué necesita aislamiento de datos.
-2. Describir cómo un **JWT** transporta identidad de forma stateless y firmada.
-3. Implementar un sistema de **refresh tokens** con TTL en Redis.
-4. Configurar **Row-Level Security** en PostgreSQL usando GUCs por sesión.
-5. Identificar los **vectores de ataque** habituales sobre sistemas de identidad y razonar las mitigaciones.
-6. Combinar las tres capas (JWT, Redis, RLS) como **defensa en profundidad**.
-
-## Requisitos previos
-
-- HTTP, REST, JSON.
-- SQL básico, transacciones.
-- Hashing y firma criptográfica (a nivel conceptual).
+> Documento didáctico que recorre la evolución de los mecanismos de autenticación en la web, mostrando cómo cada solución surge para resolver los problemas de la anterior.
 
 ---
 
-## 1. El problema: una sola API, muchos clientes
+## Índice
 
-Imagina que construyes una plataforma SaaS de gestión de estudios de yoga. Tienes **una sola base de datos** y **un solo backend**, pero das servicio a 500 estudios distintos. Cada estudio (un *tenant*) tiene sus alumnos, sus reservas y su contabilidad — y **bajo ningún concepto** un estudio puede ver los datos de otro.
+1. [Introducción: el problema de la identificación](#1-introducción-el-problema-de-la-identificación)
+2. [Sesiones clásicas (server-side sessions)](#2-sesiones-clásicas-server-side-sessions)
+3. [JWT: la respuesta stateless](#3-jwt-la-respuesta-stateless)
+4. [El problema de los JWT y el refresh token](#4-el-problema-de-los-jwt-y-el-refresh-token)
+5. [Flujo de expiración del access token](#5-flujo-de-expiración-del-access-token)
+6. [¿Y si roban ambos tokens?](#6-y-si-roban-ambos-tokens)
+7. [¿Cuál es entonces el sentido del refresh token?](#7-cuál-es-entonces-el-sentido-del-refresh-token)
+8. [Comparación final y cuándo elegir cada modelo](#8-comparación-final-y-cuándo-elegir-cada-modelo)
 
-Esto es **multi-tenancy**: una infraestructura compartida, pero con datos lógicamente aislados.
+---
 
-```mermaid
-graph TB
-  subgraph "Clientes (varios tenants)"
-    C1[Cliente A<br/>tenant=acme]
-    C2[Cliente B<br/>tenant=acme]
-    C3[Cliente C<br/>tenant=zen]
-  end
+## 1. Introducción: el problema de la identificación
 
-  subgraph "Backend compartido"
-    NG[NGINX]
-    AUTH[platform-auth]
-    APP[microservicio]
-  end
+HTTP es un protocolo **sin estado**. Cada petición es independiente: el servidor, por defecto, no tiene forma de saber si dos peticiones consecutivas vienen del mismo usuario. Esto era suficiente para la web original (servir documentos estáticos), pero deja de serlo en cuanto necesitas:
 
-  subgraph "Persistencia compartida"
-    PG[(PostgreSQL)]
-    R[(Redis)]
-  end
+- Que un usuario haga login una vez y siga autenticado durante la navegación.
+- Distinguir qué usuario hace cada acción.
+- Mantener un carrito, preferencias, permisos.
 
-  C1 --> NG
-  C2 --> NG
-  C3 --> NG
-  NG --> AUTH
-  NG --> APP
-  AUTH --> PG
-  AUTH --> R
-  APP --> PG
-```
+El problema fundamental se reduce a una pregunta:
 
-La pregunta clave es: **si todos los datos están en la misma BD, ¿cómo garantizamos que la petición del cliente C nunca devuelva datos del cliente A?**
+> **¿Cómo demuestra un cliente, en cada petición, que es quien dice ser, sin tener que mandar la contraseña cada vez?**
 
-La respuesta no es una sola medida — es **defensa en profundidad**: tres capas que se complementan, de modo que si una falla, las otras siguen protegiendo.
+La respuesta general siempre es la misma: **emitir un credencial temporal** después del login, que el cliente envía en cada petición posterior. La diferencia entre los modelos que veremos está en **qué contiene ese credencial** y **dónde vive la información de identidad**:
 
-| Capa | Pregunta que responde | Tecnología |
+| Modelo | Dónde vive la identidad | Qué lleva el cliente |
 |---|---|---|
-| 1. Identidad | ¿Quién eres y a qué tenant perteneces? | JWT |
-| 2. Sesión | ¿Sigues teniendo permiso para estar aquí? | Refresh token en Redis |
-| 3. Aislamiento | Aun así, ¿la BD te deja ver solo lo tuyo? | GUCs + Row-Level Security |
+| Sesión clásica | En el servidor | Un identificador opaco |
+| JWT | En el propio token | Un token autocontenido y firmado |
+| JWT + refresh | Igual que JWT, pero con renovación | Dos tokens con perfiles distintos |
+
+Entender por qué cada modelo existe es entender qué problema del anterior intenta resolver. Eso es lo que vamos a recorrer.
 
 ---
 
-## 2. Capa 1 — Identidad con JWT
+## 2. Sesiones clásicas (server-side sessions)
 
-### 2.1 ¿Qué es un JWT?
+### La idea central
 
-**JSON Web Token**: un formato de token autocontenido y firmado para transportar identidad/permisos entre cliente y servidor sin sesión en el servidor.
+> El servidor recuerda quién eres. El cliente solo lleva un **identificador opaco** que apunta a esa memoria.
 
-Estructura — tres partes en base64url separadas por puntos:
+El identificador es un string aleatorio largo (ej. `s:8f4j2k9d1m...`), sin ningún significado por sí mismo. Si lo decodificas, no obtienes nada — es solo una **clave** para buscar en una tabla del servidor.
 
 ```
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3IxIn0.aBcD3fG...
-└──────── HEADER ────────┘ └─── PAYLOAD ───┘ └─ SIGNATURE ─┘
+Cliente:  "Hola, soy la sesión abc123"
+Servidor: [busca abc123 en su almacén] → "Ah, eres Ana, tenant X, rol admin"
 ```
 
-- **Header:** `{ "alg": "HS256", "typ": "JWT" }` — algoritmo y tipo.
-- **Payload:** los **claims** (afirmaciones sobre el usuario).
-- **Signature:** firma criptográfica que protege header + payload contra modificación.
+### Flujo paso a paso
 
-### 2.2 Claims
-
-Los claims son los campos del payload. Ejemplo real:
-
-```json
-{
-  "sub":       "20000000-0000-0000-0000-000000000001",
-  "app_id":    "yoga-studio",
-  "tenant_id": "11111111-1111-1111-1111-111111111111",
-  "role":      "instructor",
-  "email":     "ana@acme-yoga.com",
-  "iat":       1776969464,
-  "exp":       1776970364
-}
+```
+┌──────────┐                                       ┌──────────┐         ┌────────┐
+│ Cliente  │                                       │ Servidor │         │  Store │
+└────┬─────┘                                       └────┬─────┘         └───┬────┘
+     │                                                  │                   │
+     │ 1. POST /login (usuario + contraseña)            │                   │
+     ├─────────────────────────────────────────────────►│                   │
+     │                                                  │                   │
+     │                                                  │ 2. Valida creds   │
+     │                                                  │    Genera ID      │
+     │                                                  │    aleatorio      │
+     │                                                  │    "abc123"       │
+     │                                                  │                   │
+     │                                                  │ 3. Guarda sesión  │
+     │                                                  ├──────────────────►│
+     │                                                  │   abc123 → {      │
+     │                                                  │     userId: 42,   │
+     │                                                  │     tenantId: ..  │
+     │                                                  │     expiresAt: .. │
+     │                                                  │   }               │
+     │                                                  │                   │
+     │ 4. 200 OK                                        │                   │
+     │    Set-Cookie: sid=abc123;                       │                   │
+     │      HttpOnly; Secure; SameSite=Lax              │                   │
+     │◄─────────────────────────────────────────────────┤                   │
+     │                                                  │                   │
+     │ 5. GET /api/datos                                │                   │
+     │    Cookie: sid=abc123                            │                   │
+     ├─────────────────────────────────────────────────►│                   │
+     │                                                  │                   │
+     │                                                  │ 6. Lee cookie     │
+     │                                                  │    Busca sesión   │
+     │                                                  ├──────────────────►│
+     │                                                  │◄──────────────────┤
+     │                                                  │   { userId: 42 }  │
+     │                                                  │                   │
+     │ 7. 200 OK { data }                               │                   │
+     │◄─────────────────────────────────────────────────┤                   │
+     │                                                  │                   │
+     │             ... usuario hace logout ...          │                   │
+     │                                                  │                   │
+     │ 8. POST /logout                                  │                   │
+     ├─────────────────────────────────────────────────►│                   │
+     │                                                  │ 9. DELETE abc123  │
+     │                                                  ├──────────────────►│
+     │ 10. 200 OK + borrar cookie                       │                   │
+     │◄─────────────────────────────────────────────────┤                   │
 ```
 
-| Claim | Tipo | Significado |
+Lo crítico: **el servidor toca el almacén en cada petición autenticada** (paso 6). Eso es a la vez la fuerza y la debilidad del modelo.
+
+### Dónde se guarda la sesión
+
+- **Memoria del proceso**: solo válido si tienes un único servidor. Para algo serio, no.
+- **Base de datos relacional**: persistente y auditable, pero más lento.
+- **Redis o similar**: en memoria, rápido, soporta TTL nativo, comparte estado entre instancias. **Es el estándar de facto** hoy.
+
+### La cookie: el detalle que mucha gente ignora
+
+El identificador viaja en una cookie. Las flags importan **mucho**:
+
+| Flag | Qué hace | Por qué importa |
 |---|---|---|
-| `sub` | registered | subject — id del usuario |
-| `iat` | registered | issued at — timestamp de emisión |
-| `exp` | registered | expiration — timestamp de expiración |
-| `app_id` | private | qué app del SaaS (yoga, splitpay…) |
-| `tenant_id` | private | qué cliente del SaaS |
-| `role` | private | rol dentro de ese tenant |
+| `HttpOnly` | El JavaScript no puede leerla | Bloquea robo vía XSS |
+| `Secure` | Solo viaja por HTTPS | Bloquea robo vía red |
+| `SameSite=Lax` o `Strict` | Limita envío cross-site | Mitiga CSRF |
+| `Domain` y `Path` | Limita el alcance | Reduce superficie de ataque |
+| `Max-Age` / `Expires` | Cuándo el navegador la borra | Controla persistencia |
 
-> ⚠️ **El payload NO está cifrado, solo codificado.** Cualquiera puede leerlo. **Nunca metas datos sensibles** (contraseñas, tarjetas, datos personales innecesarios).
+Una sesión bien configurada con estas flags es **más segura por defecto** que un JWT en `localStorage`.
 
-### 2.3 Firma — el truco que lo hace seguro
+### Problemas asociados a las sesiones clásicas
 
-```
-signature = HMAC_SHA256(
-  base64url(header) + "." + base64url(payload),
-  JWT_SECRET
-)
-```
+#### 1. Escalabilidad horizontal
 
-- El servidor que **emite** el token tiene el `JWT_SECRET`.
-- El servidor que **verifica** el token también lo tiene.
-- Cualquier modificación del payload (por ejemplo, cambiar `"role": "user"` por `"role": "admin"`) **invalida la firma** porque el atacante no conoce el secreto.
+Si la sesión vive en la memoria del servidor A, y el siguiente request lo atiende el servidor B (load balancer), B no encuentra la sesión.
 
-> 🎯 **Idea clave:** el JWT es como un pasaporte sellado. Cualquiera puede leerlo, pero solo la autoridad emisora puede emitir uno válido.
+- **Sticky sessions**: el LB manda siempre al mismo servidor. Funciona pero es frágil.
+- **Almacén compartido** (Redis): todos los servidores leen del mismo sitio. Solución correcta hoy.
 
-### 2.4 Flujo de login
+> No es un problema *real* en 2025, pero históricamente fue **el** argumento que impulsó JWT.
 
-```mermaid
-sequenceDiagram
-  participant C as Cliente
-  participant A as platform-auth
-  participant DB as PostgreSQL
-  participant R as Redis
+#### 2. Latencia y carga del store
 
-  C->>A: POST /login {email, password}
-  A->>DB: BEGIN; SELECT * FROM users WHERE email=?
-  DB-->>A: user (con password_hash)
-  A->>A: bcrypt.compare(password, hash) ✓
-  A->>A: firma JWT con JWT_SECRET (15 min)
-  A->>R: SETEX refresh:{user}:{uuid} EX 30d → '1'
-  A-->>C: 200 { accessToken, refreshToken }
+Cada petición autenticada = una lectura al almacén. Con Redis es ~1ms, pero:
+
+- Si el store cae, **toda la app cae**.
+- En picos de tráfico, el store puede saturarse antes que la app.
+- Si tu app tiene 50 microservicios y cada uno valida la sesión, son 50 lecturas a Redis por request.
+
+#### 3. CSRF (Cross-Site Request Forgery)
+
+**El gran problema histórico de las sesiones con cookies.** El navegador envía cookies **automáticamente** al dominio que las emitió. Si estás logueado en `tubanco.com` y visitas `evil.com`:
+
+```html
+<form action="https://tubanco.com/transferir" method="POST">
+  <input name="destino" value="atacante">
+  <input name="cantidad" value="10000">
+</form>
+<script>document.forms[0].submit()</script>
 ```
 
-### 2.5 Flujo de petición protegida
+El navegador envía la cookie de sesión sin que tú lo autorices.
 
-```mermaid
-sequenceDiagram
-  participant C as Cliente
-  participant N as NGINX
-  participant S as Microservicio
-  participant DB as PostgreSQL
+**Defensas:**
+- `SameSite=Lax` o `Strict` → mata el 95% de CSRF y hoy es el default.
+- **Tokens CSRF** sincronizados.
+- **Verificar `Origin` / `Referer`** en endpoints sensibles.
 
-  C->>N: GET /api/yoga/classes<br/>Authorization: Bearer <jwt>
-  N->>S: forward
-  S->>S: verifica firma JWT
-  S->>S: comprueba exp
-  S->>S: appGuard: ¿claim app_id == servicio esperado?
-  S->>DB: query + filtros de tenant
-  DB-->>S: filas
-  S-->>C: 200 OK
-```
+#### 4. CORS y subdominios
 
-> 💡 **Stateless = el servidor no recuerda sesiones.** El cliente lleva el JWT en cada petición y el servidor lo verifica desde cero. Esto permite escalar a 100 microservicios sin un servicio central de sesiones.
+Las cookies tienen reglas de dominio rígidas. Para un SaaS multi-tenant con dominios custom (como SplitPay), las cookies third-party están cada vez más restringidas (Safari ITP, Chrome bloqueando 3rd party cookies). **Complica seriamente** el modelo.
+
+#### 5. Mobile y APIs públicas
+
+Las cookies son un mecanismo del **navegador**. Una app móvil nativa o un cliente API (curl, otro servicio) no tiene la maquinaria de cookies integrada de forma natural. Se puede hacer, pero es incómodo.
+
+#### 6. Fijación de sesión
+
+El atacante consigue que la víctima use un ID de sesión conocido por él. **Defensa:** regenerar el ID al hacer login (`req.session.regenerate()`).
+
+#### 7. Expiración: idle vs absolute
+
+Necesitas dos timeouts:
+- **Idle timeout**: la sesión muere si pasan N minutos sin actividad.
+- **Absolute timeout**: muere a las N horas de creada, hagas lo que hagas.
+
+Sin idle, una sesión olvidada en un PC público vive para siempre. Sin absolute, un atacante con la cookie la mantiene viva indefinidamente.
+
+#### 8. Limpieza del store
+
+Sin TTL nativo (Redis lo tiene, una tabla SQL no), las sesiones expiradas no se borran solas y el store crece indefinidamente.
+
+### Resumen del modelo clásico
+
+✅ **Ventajas**
+- Revocación inmediata (basta borrar del store).
+- Logout global trivial (borras todas las sesiones del usuario).
+- Trazabilidad completa (cada uso pasa por el servidor).
+- Cookie en navegador es muy segura por defecto si configuras las flags.
+- Identificador pequeño en cada request.
+
+❌ **Inconvenientes**
+- Cada request consulta el store → coste de I/O.
+- Necesita store compartido para escalar horizontalmente.
+- Vulnerable a CSRF si no configuras `SameSite`.
+- Incómodo en mobile, APIs públicas y multi-dominio.
+- Acoplamiento fuerte entre servicios y store de sesión.
+
+> Aquí surge la pregunta: **¿se puede hacer autenticación sin que el servidor tenga que recordar nada?** Esa pregunta es la que da origen a JWT.
 
 ---
 
-## 3. Capa 2 — Refresh tokens en Redis
+## 3. JWT: la respuesta stateless
 
-### 3.1 El problema con los JWT
+### Qué es un JWT
 
-Los JWT son stateless, y eso es genial para escalar — pero tiene una consecuencia incómoda: **no se pueden revocar**.
+Un **JWT** (JSON Web Token, RFC 7519) es un estándar para transmitir información entre dos partes de forma **firmada** y **verificable**. Permite sesiones *stateless*: el servidor no guarda nada, le basta con verificar la firma del token que el cliente envía.
 
-Si un usuario hace logout, su JWT sigue siendo válido hasta `exp`. Si le roban el JWT, no hay forma de "matarlo" desde el servidor.
-
-### 3.2 La solución: dos tokens
-
-| Token | Tipo | Vida | Almacenamiento | Uso |
-|---|---|---|---|---|
-| **Access token** | JWT firmado | **15 min** | solo cliente | autorización en cada request |
-| **Refresh token** | UUID opaco | **30 días** | **Redis (servidor)** + cliente | pedir un access nuevo |
-
-- Si te roban el **access token** → el daño dura como mucho 15 minutos.
-- Si quieres echar a un usuario → **borras su clave en Redis** y al próximo refresh queda fuera.
-
-### 3.3 ¿Por qué Redis?
-
-- **TTL nativo:** `SETEX clave 2592000 valor` → la clave se autodestruye a los 30 días. No hay que hacer cron de limpieza.
-- **O(1) lookups:** los refresh ocurren constantemente, tienen que ser rapidísimos.
-- **In-memory:** persiste lo justo para sesiones, no es la "fuente de verdad" — si se pierde, los usuarios solo tienen que volver a loguearse.
-
-### 3.4 Estructura de la clave
+### Estructura: tres partes separadas por puntos
 
 ```
-yoga-studio:11111111-1111-...:refresh:20000000-0000-...:c74a4d6d-b372-...
-└── app_id ─┘└──── tenant_id ────┘         └── user_id ─────┘└── refresh UUID ─┘
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMiLCJleHAiOjE3MzAwMDB9.abc123firma
+   ───── header ─────  ────────── payload ──────────  ─── signature ───
 ```
 
-El **valor** es solo `'1'`. La información ya está en la clave. La clave existe ⇒ token válido. La clave no existe ⇒ token revocado o expirado.
+1. **Header** — qué algoritmo se usa para firmar (`HS256`, `RS256`, etc.)
+2. **Payload** — los *claims* (datos), ej. id de usuario y expiración
+3. **Signature** — firma criptográfica del header + payload con una clave secreta
 
-### 3.5 Flujo de renovación
+Las dos primeras partes son **Base64URL**, no encriptadas. Cualquiera puede decodificarlas. La firma es lo que garantiza que no han sido modificadas.
 
-```mermaid
-sequenceDiagram
-  participant C as Cliente
-  participant A as platform-auth
-  participant R as Redis
+> **Punto clave:** un JWT firmado **no es secreto, es verificable**. No metas contraseñas ni datos sensibles en el payload.
 
-  Note over C: access token expirado
-  C->>A: POST /refresh {appId, tenantId, userId, refreshToken}
-  A->>R: GET refresh:{...}:{uuid}
+### Claims típicos
 
-  alt clave existe
-    R-->>A: '1'
-    A->>R: DEL refresh:{...}:{uuid}
-    A->>R: SETEX refresh:{...}:{newUuid} EX 30d
-    A-->>C: 200 { accessToken nuevo, refreshToken nuevo }
-  else clave no existe
-    R-->>A: nil
-    A-->>C: 401 Unauthorized
-  end
+Claims estándar (RFC):
+
+- `sub` — *subject*, normalmente el id del usuario
+- `iss` — *issuer*, quién emitió el token
+- `aud` — *audience*, para quién es
+- `exp` — *expiration*, timestamp de caducidad
+- `iat` — *issued at*, cuándo se emitió
+- `nbf` — *not before*
+- `jti` — id único del token (útil para revocación)
+
+Y puedes añadir los tuyos. En un proyecto multi-tenant, `tenant_id` y `sub_tenant_id` viajarían como claims, así cada petición sabe a qué inquilino pertenece sin consultar la base de datos.
+
+### Cómo se usa en una API
+
+```
+1. POST /login con usuario + contraseña
+2. El servidor valida y devuelve un JWT firmado
+3. El cliente lo guarda y lo envía en cada petición:
+       Authorization: Bearer eyJhbGciOi...
+4. El servidor verifica la firma y la expiración, y extrae los claims
+   — sin tocar ninguna base de datos.
 ```
 
-### 3.6 Logout y reset de contraseña
+### Cómo JWT resuelve los problemas de las sesiones clásicas
+
+| Problema en sesiones clásicas | Cómo lo resuelve JWT |
+|---|---|
+| Cada request consulta el store | El servidor solo verifica la firma — no toca DB |
+| Necesita store compartido para escalar | Cualquier servidor con la clave pública puede validar |
+| CSRF (cookies enviadas automáticamente) | El token va en `Authorization`, el navegador no lo manda solo |
+| Incómodo en mobile / APIs | Trivial: solo es un header HTTP |
+| Cross-domain complicado | El header viaja a cualquier dominio sin reglas raras |
+
+### Algoritmos de firma
+
+- **HS256** (HMAC + clave compartida): simple, ambas partes conocen la misma clave.
+- **RS256 / ES256** (clave pública/privada): el emisor firma con la privada, cualquiera verifica con la pública. Mejor para sistemas distribuidos.
+
+### Seguridad esencial con JWT
+
+- **El payload es público.** Solo guarda lo no sensible.
+- **Siempre valida la firma y la expiración** en el servidor.
+- **Cuidado con `alg: none`** — un atacante puede mandar un token sin firma. Rechaza algoritmos no esperados.
+- **Algorithm confusion**: si esperas RS256 y aceptas HS256, un atacante puede usar tu clave pública como clave HMAC. Fija el algoritmo explícitamente al verificar.
+- **Dónde guardarlo**: `localStorage` es vulnerable a XSS; cookies `httpOnly` + `Secure` + `SameSite` son más seguras pero requieren protección CSRF.
+
+---
+
+## 4. El problema de los JWT y el refresh token
+
+JWT resuelve la escalabilidad y el cross-domain, pero introduce **un problema serio**: si el token es robado, ¿cómo lo invalidas? La firma sigue siendo válida hasta `exp`.
+
+### El dilema sin refresh token
+
+Imagina que solo tienes un JWT (que llamamos *access token*). Tienes que elegir su duración:
+
+**Opción A: token largo (ej. 7 días).**
+- ✅ Cómodo: el usuario no tiene que reloguearse.
+- ❌ Si lo roban, el atacante tiene 7 días dentro.
+- ❌ **No puedes revocarlo** sin romper la naturaleza stateless.
+- ❌ Para revocar, tendrías que consultar una blacklist en cada petición → pierdes la ventaja stateless de JWT.
+
+**Opción B: token corto (ej. 15 min).**
+- ✅ Si lo roban, daño limitado.
+- ❌ El usuario tiene que hacer login cada 15 minutos. Inviable.
+
+Cualquiera de las dos es mala. **El refresh token rompe el dilema.**
+
+### La idea del refresh token
+
+> Separar **lo que viaja mucho** (en cada petición a la API) de **lo que vive mucho** (la sesión persistente).
+
+Se usan **dos tokens** con perfiles muy distintos:
+
+| | Access token | Refresh token |
+|---|---|---|
+| Vida útil | Corta (15–60 min) | Larga (días o semanas) |
+| Para qué sirve | Autenticar peticiones a la API | Obtener un nuevo access token |
+| Dónde se envía | En cada request (`Authorization: Bearer`) | Solo al endpoint `/refresh` |
+| Dónde se guarda | Memoria o cookie httpOnly | Cookie httpOnly + Secure |
+| Estado en servidor | Stateless (solo firma) | Suele guardarse en DB/Redis para poder revocarlo |
+
+El access caduca pronto (limita el daño si lo roban). El refresh permite renovarlo sin pedir credenciales otra vez.
+
+---
+
+## 5. Flujo de expiración del access token
+
+### Flujo completo paso a paso
+
+```
+┌──────────┐                                      ┌──────────┐
+│ Cliente  │                                      │ Servidor │
+└────┬─────┘                                      └────┬─────┘
+     │                                                 │
+     │  1. POST /login (usuario + contraseña)          │
+     ├────────────────────────────────────────────────►│
+     │                                                 │
+     │  2. { accessToken (15min), refreshToken (7d) }  │
+     │◄────────────────────────────────────────────────┤
+     │                                                 │
+     │  3. GET /api/datos                              │
+     │     Authorization: Bearer <accessToken>         │
+     ├────────────────────────────────────────────────►│
+     │                                                 │
+     │  4. 200 OK { data }                             │
+     │◄────────────────────────────────────────────────┤
+     │                                                 │
+     │            ... pasan 20 minutos ...             │
+     │                                                 │
+     │  5. GET /api/datos                              │
+     │     Authorization: Bearer <accessToken>         │
+     ├────────────────────────────────────────────────►│
+     │                                                 │
+     │  6. 401 Unauthorized                            │
+     │     { error: "token_expired" }                  │
+     │◄────────────────────────────────────────────────┤
+     │                                                 │
+     │  7. POST /auth/refresh                          │
+     │     Cookie: refreshToken=...                    │
+     ├────────────────────────────────────────────────►│
+     │                                                 │
+     │  8. { accessToken nuevo, refreshToken nuevo }   │
+     │◄────────────────────────────────────────────────┤
+     │                                                 │
+     │  9. Reintenta GET /api/datos con el nuevo token │
+     ├────────────────────────────────────────────────►│
+     │                                                 │
+     │ 10. 200 OK { data }                             │
+     │◄────────────────────────────────────────────────┤
+```
+
+### Qué hace el cliente cuando detecta un 401
+
+Un **interceptor HTTP** (Axios, fetch wrapper):
+
+1. Intercepta cualquier respuesta 401 con código `token_expired`.
+2. Llama a `/auth/refresh` enviando el refresh token.
+3. Si el refresh va bien, guarda el nuevo access token y **reintenta la petición original**.
+4. Si el refresh también falla, redirige a login.
 
 ```js
-// Logout: invalida solo la sesión actual
-DEL "yoga-studio:tenant:refresh:user:UUID"
-
-// Reset password: invalida TODAS las sesiones del usuario
-SCAN match "yoga-studio:tenant:refresh:user:*"
-→ DEL todas las claves encontradas
-```
-
-Tras cambiar la contraseña, todas las sesiones activas (móvil, navegador, otro PC) quedan fuera. Patrón estándar de seguridad.
-
----
-
-## 4. Capa 3 — GUCs + Row-Level Security
-
-### 4.1 ¿Qué es una GUC?
-
-**Grand Unified Configuration** — el sistema de variables de configuración de PostgreSQL. Las hay globales (`work_mem`, `shared_buffers`) y las hay **por sesión o transacción**.
-
-```sql
--- setea una variable custom solo para esta transacción (true = local)
-SELECT set_config('app.tenant_id', '11111111-...', true);
-
--- la lees con
-SELECT current_setting('app.tenant_id');
-```
-
-`app.*` es el namespace convencional para variables de aplicación. Se puede setear sin declarar nada antes.
-
-### 4.2 Row-Level Security (RLS)
-
-Mecanismo nativo de PostgreSQL que **filtra filas a nivel del motor** antes de devolverlas. Tú escribes una política una vez, y Postgres la aplica a todo `SELECT/UPDATE/DELETE` automáticamente.
-
-```sql
-ALTER TABLE yoga_classes.classes ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY tenant_isolation ON yoga_classes.classes
-  USING (
-    app_id    = current_setting('app.app_id')
-    AND tenant_id = current_setting('app.tenant_id')
-  );
-```
-
-A partir de aquí, **cualquier query** sobre `classes` solo devuelve filas donde `app_id` y `tenant_id` coincidan con las GUCs.
-
-### 4.3 RLS en acción
-
-```mermaid
-graph TD
-  Q[SELECT * FROM classes] --> M{Motor de Postgres<br/>aplica política RLS}
-  M -->|app_id y tenant_id<br/>coinciden con GUCs| OK[fila incluida]
-  M -->|no coinciden| FILT[fila filtrada<br/>silenciosamente]
-  OK --> R[resultado al cliente]
-  FILT --> R
-```
-
-> 🎯 **Idea clave:** aunque un dev olvide poner `WHERE tenant_id = $1` en una query, la RLS lo filtra igual. Es la última línea de defensa.
-
-### 4.4 El patrón obligatorio en código
-
-```js
-async function listClasses(appId, tenantId) {
-  const client = await pool.connect()
-  try {
-    await client.query('BEGIN')
-    await client.query("SELECT set_config('app.app_id',    $1, true)", [appId])
-    await client.query("SELECT set_config('app.tenant_id', $1, true)", [tenantId])
-
-    // a partir de aquí, RLS filtra automáticamente
-    const { rows } = await client.query('SELECT * FROM yoga_classes.classes')
-    await client.query('COMMIT')
-    return rows
-  } finally {
-    client.release()
+// Pseudocódigo
+api.onResponseError(async (error, originalRequest) => {
+  if (error.status === 401 && !originalRequest._retried) {
+    originalRequest._retried = true;
+    try {
+      const { accessToken } = await api.post('/auth/refresh');
+      saveAccessToken(accessToken);
+      originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+      return api.request(originalRequest); // reintenta
+    } catch {
+      redirectToLogin();
+    }
   }
+  throw error;
+});
+```
+
+El usuario **no se entera** de que el token expiró.
+
+### Qué hace el servidor en `/auth/refresh`
+
+```
+1. Lee el refresh token de la cookie httpOnly.
+2. Verifica su firma y expiración.
+3. Comprueba en la base de datos / Redis que NO está revocado.
+4. (Recomendado) Marca el refresh actual como usado.
+5. Emite un access token nuevo + un refresh token nuevo.
+6. Devuelve el access en el body y el refresh en cookie httpOnly.
+```
+
+### Refresh token rotation
+
+Cada vez que se usa un refresh token, **se invalida y se emite uno nuevo**. Esto sirve para detectar robos.
+
+### Casos borde a manejar
+
+**Race condition con peticiones paralelas.** Si 5 llamadas fallan a la vez con 401, no quieres disparar 5 refreshes. Una única promesa de refresh en curso a la que se suscriben todas:
+
+```js
+let refreshPromise = null;
+function refresh() {
+  if (!refreshPromise) {
+    refreshPromise = api.post('/auth/refresh')
+      .finally(() => { refreshPromise = null; });
+  }
+  return refreshPromise;
 }
 ```
 
-⚠️ Es **obligatorio** envolver las queries en una transacción (`BEGIN`/`COMMIT`). Sin transacción, las GUCs locales no se mantienen entre queries y la política falla.
+**Refresh token expirado.** Cliente borra todo, redirige a login.
 
-### 4.5 Roles dedicados por servicio
+**Logout.** No basta borrar tokens del cliente: hay que invalidar el refresh en el servidor.
 
-Cada microservicio se conecta con un **rol propio** (`svc_yoga_classes`, `svc_platform_auth`…), no con superuser. Los roles dedicados están sujetos a RLS; el superuser **bypasea** la política. Por eso el superuser solo se usa para migraciones (`migrate.js`), nunca en runtime.
+**Clock skew.** Permite un `clockTolerance` de unos segundos al verificar.
 
 ---
 
-## 5. Las tres capas juntas
+## 6. ¿Y si roban ambos tokens?
 
-```mermaid
-graph TB
-  Pet[Petición HTTP<br/>Authorization: Bearer JWT] --> C1
+Respuesta corta incómoda: **si el atacante tiene ambos tokens, está dentro como tú**. No hay magia criptográfica que lo impida.
 
-  subgraph "Capa 1: Identidad (JWT)"
-    C1[Verifica firma del JWT]
-    C1 --> C1a{firma OK?}
-    C1a -->|no| RechazaJWT[401]
-    C1a -->|sí| C1b{exp pasado?}
-    C1b -->|sí| RechazaExp[401]
-    C1b -->|no| C2
-  end
+Lo importante es entender el **alcance del daño, cómo se detecta, y cómo se mitiga**.
 
-  subgraph "Capa 2: Aplicación / appGuard"
-    C2[Comprueba claim app_id<br/>contra servicio destino]
-    C2 --> C2a{coincide?}
-    C2a -->|no| RechazaApp[403 APP_MISMATCH]
-    C2a -->|sí| C3
-  end
+### Escenario 1: solo roban el access token
 
-  subgraph "Capa 3: Aislamiento (RLS)"
-    C3[BEGIN; setea GUCs<br/>app_id, tenant_id]
-    C3 --> C3b[Query SQL]
-    C3b --> C3c[Postgres aplica<br/>policy USING ...]
-    C3c --> C3d[Solo filas del tenant]
-  end
+El menos grave.
+- El atacante hace peticiones autenticadas hasta que expire (15–60 min).
+- No puede renovarlo (no tiene refresh).
+- Al expirar, queda fuera automáticamente.
 
-  C3d --> Resp[200 OK con datos]
+**Daño máximo:** vida restante del access token. Por eso se usan `exp` cortos.
+
+### Escenario 2: roban el refresh token
+
+Aquí la cosa se pone seria. **Sin protecciones**, el atacante mantiene la sesión viva indefinidamente.
+
+Aquí entra **refresh token rotation con detección de reuso**:
+
+```
+Cada refresh token solo se puede usar UNA VEZ.
+Al usarlo, se emite uno nuevo y el viejo queda marcado como "consumido".
+Si alguien intenta usar un refresh consumido → ALERTA → invalidar toda la familia.
 ```
 
-### ¿Qué pasa si quitas cada capa?
+#### Cómo se detecta el robo
 
-| Capa que falta | Consecuencia |
-|---|---|
-| Sin JWT | Cualquiera puede llamar a la API. Sin identidad ⇒ sin autorización posible. |
-| Sin verificación de firma | Un atacante edita el `role` o el `tenant_id` y se vuelve admin de otro tenant. |
-| Sin refresh tokens en Redis | No puedes echar a nadie. JWT robado = sesión válida hasta exp. |
-| Sin appGuard | Token de yoga vale para llamar a payments. Cross-app data leak. |
-| Sin GUCs / RLS | Un olvido de `WHERE tenant_id = ?` filtra datos entre clientes. **El bug típico que hunde un SaaS.** |
+```
+Estado inicial: víctima y atacante tienen el mismo refresh token RT1.
 
-> 🎯 **Defensa en profundidad** = ninguna capa es perfecta, pero **necesitas romper TODAS** para hacer daño.
+Caso A — el atacante refresca primero:
+  Atacante: POST /refresh con RT1  →  recibe RT2 (nuevo)
+  Servidor: marca RT1 como usado.
 
----
+  Víctima (más tarde): POST /refresh con RT1
+  Servidor: "RT1 ya fue usado pero la familia sigue activa → ROBO"
+  → invalida RT1, RT2 y toda la cadena
+  → fuerza re-login
 
-## 6. Posibles ataques
+Caso B — la víctima refresca primero:
+  Víctima: POST /refresh con RT1  →  recibe RT2
+  Atacante (después): POST /refresh con RT1
+  Servidor: detecta lo mismo → invalida la familia.
+```
 
-A continuación los ataques más relevantes y cómo cada capa los mitiga.
+> **Lo clave:** *uno de los dos* va a usar el token "viejo" tarde o temprano. Cuando lo haga, se detecta el robo con certeza, aunque no se sepa quién es el ladrón.
 
-### 6.1 Token tampering (manipulación del payload)
+#### Qué hace el servidor al detectar reuso
 
-**Vector:** el atacante intercepta un JWT válido, modifica el payload (`"role": "user"` → `"role": "super_admin"`) y lo reenvía.
+1. **Invalida toda la familia** de refresh tokens descendientes.
+2. **Cierra todas las sesiones activas** del usuario.
+3. **Notifica al usuario** ("detectamos actividad sospechosa").
+4. **Loguea el evento** para auditoría.
+5. (Opcional) **Bloquea temporalmente** la cuenta o exige 2FA.
 
-**Sin firma:** funcionaría — el servidor confiaría en el payload modificado.
+### Escenario 3: roban ambos
 
-**Mitigación:** la firma HMAC depende de header + payload + secreto. Cambiar el payload invalida la firma. El servidor rechaza con 401.
+El peor caso. Pero **incluso aquí**, la rotación con detección de reuso sigue funcionando: la próxima vez que la víctima intente refrescar con su token viejo → se detecta el robo y se invalida todo. Solo si la víctima nunca vuelve a usar la app, el atacante pasa desapercibido.
 
-### 6.2 Robo del access token (XSS)
+### Defensas en profundidad
 
-**Vector:** el atacante inyecta JavaScript en la página (XSS) y lee `localStorage.getItem('apphub.token')`.
+- **Vincular el token al contexto** (device fingerprinting, DPoP / token binding).
+- **Detección de anomalías** (geolocalización imposible, login desde país inusual).
+- **Limitar el alcance** (scopes mínimos, audience específico, step-up auth).
+- **Almacenamiento seguro** (httpOnly + Secure + SameSite, HTTPS obligatorio).
+- **Capacidad de revocar** (lista de `jti` revocados en Redis, endpoint `/sessions`).
 
-**Sin nada:** sesión completa robada hasta `exp`.
-
-**Mitigación parcial:**
-- TTL corto (15 min) limita la ventana de daño.
-- Cookies `HttpOnly` impiden que el JS lea el token (no aplicable si lo guardas en localStorage — alternativa válida).
-- CSP (Content Security Policy) reduce la superficie XSS.
-
-> ⚠️ El refresh token guardado junto al access amplifica el daño — si se roban ambos, el atacante puede mantener la sesión 30 días.
-
-### 6.3 Robo del refresh token
-
-**Vector:** el atacante obtiene el refresh token (XSS, malware, log filtrado).
-
-**Sin nada:** sesión válida 30 días.
-
-**Mitigación:**
-- **Rotation:** cada uso del refresh emite uno nuevo y borra el viejo. Si el atacante usa el refresh, el legítimo deja de funcionar — y al usuario se le caen las sesiones, lo cual es señal de incidente.
-- **Detección de reuse:** si recibes el mismo refresh dos veces (porque la víctima ya lo había rotado), borras **todos** los refresh del usuario y forzas re-login.
-
-### 6.4 Replay attack
-
-**Vector:** el atacante captura una petición legítima (Bearer + body) y la reenvía más tarde.
-
-**Mitigación:**
-- HTTPS obligatorio (impide captura en red).
-- TTL corto de los access tokens.
-- Para operaciones sensibles, **nonces** o **idempotency keys** (lo que AppHub hace con Stripe).
-
-### 6.5 Privilege escalation entre tenants
-
-**Vector:** un usuario legítimo del tenant A intenta acceder a datos del tenant B (cambiando un id en una URL, p.ej. `GET /api/users/<id_de_tenant_B>`).
-
-**Sin RLS:** si el dev olvidó el filtro `tenant_id` en la query, los datos se filtran.
-
-**Mitigación:** la política RLS evalúa cada fila contra `current_setting('app.tenant_id')`. La fila del tenant B no pasa, aunque el ID sí exista.
-
-### 6.6 Privilege escalation entre apps
-
-**Vector:** un usuario de yoga reutiliza su JWT contra el endpoint de payments. El JWT está firmado correctamente.
-
-**Sin appGuard:** payments procesa la petición sin saber que el token era de otra app.
-
-**Mitigación:** `appGuard` compara el claim `app_id` con `EXPECTED_APP_ID` del servicio. Si no coincide, devuelve `403 APP_MISMATCH`.
-
-### 6.7 Brute force de contraseñas
-
-**Vector:** el atacante prueba combinaciones email/password contra `/login`.
-
-**Mitigación:**
-- Hashing **bcrypt** con cost ≥10 — cada intento es lento incluso con la BD robada.
-- Contador `failed_login_attempts` en la tabla de usuarios.
-- Lock automático tras N fallos: `locked_until = now() + 15 minutes`.
-- Rate limiting a nivel de NGINX (`limit_req zone=api`).
-
-### 6.8 Filtración del JWT_SECRET
-
-**Vector:** el secreto se filtra (commit accidental al repo, log mal configurado, dump de variables de entorno).
-
-**Consecuencia:** **catastrófica**. El atacante puede emitir JWTs válidos para cualquier usuario.
-
-**Mitigación:**
-- Secretos solo en `.env` (excluido por `.gitignore`).
-- Rotación periódica del secreto (invalida todos los JWTs activos).
-- Para emisores externos, mejor **RS256** (clave asimétrica): solo el emisor tiene la privada.
-
-### 6.9 SQL injection
-
-**Vector:** input no sanitizado se concatena en una query.
-
-**Mitigación:**
-- **Queries parametrizadas siempre** (`$1`, `$2`…), nunca string concat.
-- Aunque la SQLi tenga éxito, **la RLS sigue activa** — la query maliciosa solo ve datos del tenant actual.
-
-### 6.10 Filtración de tokens en URLs/logs
-
-**Vector:** el JWT acaba en una URL (`?token=...`), una redirección, un log de NGINX o un Referer enviado a un tercero.
-
-**Mitigación:**
-- **Nunca** poner tokens en query strings — solo en `Authorization: Bearer`.
-- Sanitizar logs (filtrar headers de Authorization).
-- HTTPS obligatorio (impide leak en cabeceras).
-
-### 6.11 Olvidar setear las GUCs
-
-**Vector:** un dev escribe una query nueva, olvida envolverla en `BEGIN ... setear GUCs ... COMMIT`. La query se ejecuta en autocommit.
-
-**Sin RLS:** todas las filas se devuelven (cross-tenant leak).
-
-**Con RLS y sin GUCs setteadas:** `current_setting('app.tenant_id')` lanza error → la query falla. **La RLS protege incluso cuando el dev se equivoca.** El servicio devuelve 500, mucho mejor que filtrar datos.
-
-### Tabla resumen
-
-| Ataque | Capa que lo detiene |
-|---|---|
-| Tampering del payload | JWT (firma) |
-| Privilege escalation por claim modificado | JWT (firma) |
-| Token robado, sesión perpetua | Refresh tokens (TTL corto + revocación) |
-| Logout no efectivo | Refresh tokens en Redis (DEL key) |
-| Token de yoga usado en payments | appGuard (claim `app_id`) |
-| Brute force de login | Lock por intentos fallidos + rate limit |
-| Cross-tenant data leak por bug | RLS (política USING) |
-| Cross-tenant via SQL injection | RLS (sigue activa) |
-| Olvido de filtros de tenant | RLS (filtra silenciosamente) |
-| JWT_SECRET filtrado | (no se puede mitigar — rotar secreto) |
+> **La idea clave:** ningún sistema impide que un token robado funcione mientras es válido. La seguridad real está en *minimizar la ventana* (tokens cortos), *detectar el uso anómalo* (rotación + reuso) y *limitar el daño* (scopes, step-up auth).
 
 ---
 
-## 7. Práctica sugerida
+## 7. ¿Cuál es entonces el sentido del refresh token?
 
-### Ejercicio guiado (en clase)
+Si ambos tokens pueden robarse, ¿qué aporta tener dos?
 
-A partir de un proyecto Node.js + PostgreSQL + Redis pre-montado:
+### El malentendido
 
-1. **Implementar `/login`** — recibir email/password, comparar con bcrypt, emitir JWT.
-2. **Implementar `/refresh`** — validar refresh token contra Redis, rotarlo, emitir nuevo access.
-3. **Crear una tabla con RLS** — `enable row level security`, escribir la política `tenant_isolation`.
-4. **Probar el aislamiento:** desde dos tenants distintos verificar que solo se ven los propios datos.
-5. **Ataque controlado:**
-   - Modificar el payload del JWT con jwt.io → comprobar que se rechaza.
-   - Lanzar la query sin setear GUCs → comprobar el error.
-   - Hacer login fallido 5 veces → comprobar que se bloquea la cuenta.
+Mucha gente cree que el refresh token es "más seguro" que el access. **No lo es** — criptográficamente son lo mismo.
 
-### Ejercicios individuales
+El refresh existe para crear una **asimetría** entre dos cosas:
 
-1. Explica con tus palabras por qué un JWT no debe contener nunca la contraseña del usuario.
-2. ¿Qué ocurre si pones el `exp` muy largo (p.ej. 1 año)? ¿Y si lo pones muy corto (p.ej. 1 minuto)?
-3. Diseña la clave Redis para guardar **idempotency keys** de pagos por tenant. ¿Qué TTL pondrías?
-4. Escribe una política RLS que además de tenant_id contemple un `sub_tenant_id` opcional (nullable).
-5. Investiga la diferencia entre HS256 y RS256. ¿Cuándo usarías cada uno?
+- Lo que viaja **mucho** (en cada petición a la API) → debe ser **fácil de invalidar**
+- Lo que viaja **poco** (solo al renovar) → puede vivir **mucho tiempo**
+
+### Qué te da el refresh token (de verdad)
+
+#### 1. Tokens de acceso cortos sin sacrificar UX
+
+El access vive 15 minutos: si lo roban, el daño es de 15 minutos. La sesión sigue siendo larga gracias al refresh.
+
+> Reduce la ventana de exposición del token que **más se expone**. El access viaja en cada petición — cuanto más viaja, más probable es que se filtre.
+
+#### 2. Capacidad de revocar sin romper "stateless"
+
+Las APIs validan el access sin tocar la DB: solo firma + `exp`. Eso es lo que hace JWT escalable. Pero el access **no se puede revocar**.
+
+¿Cómo lo invalidas? **Indirectamente, vía el refresh.**
+
+```
+Usuario hace logout / cambia contraseña / detectas robo
+         │
+         ▼
+  Invalidas el refresh token en la DB
+         │
+         ▼
+  El access actual sigue funcionando ≤ 15 min
+         │
+         ▼
+  Cuando intenta refrescar → bloqueado → fuera para siempre
+```
+
+> El refresh es tu **palanca de revocación**. Como solo se usa al renovar, consultar la DB ahí no afecta al rendimiento de la API. Las peticiones normales siguen siendo stateless.
+
+#### 3. Detección de robos vía rotación
+
+**Imposible con un solo token.** Si solo tienes access, dos personas usándolo en paralelo es indistinguible de la víctima usándolo en móvil y portátil. La rotación necesita un token usado **infrecuentemente y de forma controlada** — ese es el refresh.
+
+#### 4. Asimetría de almacenamiento y exposición
+
+| | Access token | Refresh token |
+|---|---|---|
+| Dónde vive | Memoria o cookie | Cookie `httpOnly` + `Secure` + `SameSite=Strict` |
+| Quién lo lee | JS del cliente | **Nadie** — el JS ni siquiera puede verlo |
+| Vulnerable a XSS | Sí (si está accesible al JS) | No (httpOnly lo bloquea) |
+| Endpoints donde viaja | Todos los de la API | Solo `/auth/refresh` |
+| Dominios donde viaja | Posiblemente varios | Uno (el del auth) |
+
+El refresh vive en un **bunker** que el JavaScript no puede ni leer. Robarlo requiere o un XSS muy específico, o acceso físico, o MITM con HTTPS roto.
+
+El access **tiene que** estar accesible al JS porque hay que ponerlo en cabeceras. Es inevitablemente más expuesto, pero vive 15 minutos.
+
+### Una analogía que ayuda
+
+Piensa en una caja fuerte de hotel:
+
+- La **llave de la habitación** (access) la llevas todo el día encima. Se cae fácil del bolsillo. Pero solo abre tu habitación y solo durante tu estancia.
+- El **pasaporte** (refresh) está en la caja fuerte. Solo lo sacas cuando lo necesitas. Es más valioso, pero está mucho mejor guardado.
+
+Tener "una llave que vale para todo" sería peor: o la llevas siempre encima (insegura) o nunca la sacas (inútil).
+
+### La respuesta directa
+
+El refresh token no es irrobable. Es **mucho más difícil de robar** que el access (httpOnly, un solo endpoint), y **además** te permite tres cosas que con un único token no podrías:
+
+1. Tener access tokens cortos sin obligar al usuario a reloguearse.
+2. Mantener la API stateless conservando capacidad de revocar.
+3. Detectar robos mediante rotación con detección de reuso.
+
+> **No es seguridad absoluta, es elevar el coste del ataque y minimizar el daño cuando ocurre** — que es lo que es toda la seguridad real.
 
 ---
 
-## 8. Glosario
+## 8. Comparación final y cuándo elegir cada modelo
 
-| Término | Significado |
-|---|---|
-| **Multi-tenant** | una infraestructura compartida que sirve a múltiples clientes lógicamente aislados |
-| **Tenant** | uno de esos clientes (una empresa, una organización…) |
-| **Stateless** | el servidor no guarda estado de sesión; toda la identidad va en el token |
-| **Claim** | afirmación contenida en el payload de un JWT |
-| **HMAC** | Hash-based Message Authentication Code; firma simétrica usando un secreto compartido |
-| **base64url** | variante de base64 segura para URLs (sin `+`, `/`, `=`) |
-| **TTL** | Time To Live; tiempo tras el cual un dato se elimina automáticamente |
-| **Rotation** | emitir un token nuevo y revocar el anterior en cada uso |
-| **GUC** | Grand Unified Configuration — variables de configuración de PostgreSQL |
-| **RLS** | Row-Level Security — filtrado automático de filas por política |
-| **Defense in depth** | estrategia de seguridad basada en múltiples capas redundantes |
+### Tabla comparativa
+
+| Aspecto | Sesión clásica | JWT solo | JWT + Refresh |
+|---|---|---|---|
+| Estado en servidor | Sí (cada request) | No | Solo en refresh |
+| Revocación inmediata | Trivial | Imposible sin blacklist | Vía refresh, fácil |
+| Escalabilidad | Necesita store compartido | Natural | Natural |
+| CSRF | Vulnerable (mitigable con `SameSite`) | No aplica | No aplica para access |
+| XSS | Mitigable (HttpOnly) | Más expuesto | Mixto (refresh seguro, access expuesto) |
+| Tamaño en cada request | Pequeño | Grande | Grande (solo access) |
+| Mobile / APIs | Incómodo | Trivial | Trivial |
+| Cross-domain | Complicado | Simple | Simple |
+| Logout global | Trivial | Requiere blacklist | Vía refresh, fácil |
+| Detección de robos | Difícil | Imposible | **Posible** (rotación) |
+| Complejidad de implementación | Baja | Media | Alta |
+
+### Cuándo elegir cada uno
+
+**Sesión clásica** si:
+- Es una webapp tradicional, mismo dominio, navegador.
+- No necesitas escalabilidad extrema.
+- Quieres lo más simple y seguro por defecto.
+- El equipo no tiene experiencia con tokens y revocación.
+
+**JWT solo** (sin refresh) si:
+- API completamente stateless donde la revocación no es crítica.
+- Tokens de muy corta vida en flujos transaccionales (ej. confirmación por email).
+- Servicio a servicio, no usuarios humanos.
+
+**JWT + Refresh con rotación** si:
+- API consumida por mobile / SPA / múltiples clientes.
+- Microservicios distribuidos.
+- Multi-tenant con dominios custom.
+- Necesitas balance entre stateless y poder revocar.
+
+### La idea final
+
+> Cada modelo resuelve los problemas del anterior, pero introduce los suyos propios.
+>
+> - **Sesión clásica** delega complejidad al servidor (lo recuerda todo).
+> - **JWT** delega complejidad al cliente y al diseño (autocontenido pero difícil de revocar).
+> - **JWT + Refresh** combina lo mejor de ambos a costa de implementar rotación, detección de reuso y manejo de dos tokens.
+>
+> Mucho del entusiasmo histórico por JWT venía de "es stateless y escala". Hoy sabemos que la mayoría de apps **no necesitan ese nivel de escalabilidad** y que mantener una sesión en Redis es trivial. **JWT no es automáticamente la opción correcta** — es una herramienta con un perfil de trade-offs distinto. Elige según el problema, no según la moda.
 
 ---
 
-## 9. Lecturas recomendadas
-
-- RFC 7519 — JSON Web Token (JWT)
-- RFC 6750 — Bearer Token Usage
-- PostgreSQL Docs — Row Security Policies
-- OWASP — Authentication Cheat Sheet
-- OWASP — Session Management Cheat Sheet
+*Documento generado a partir de una sesión de aprendizaje progresivo sobre autenticación web.*
