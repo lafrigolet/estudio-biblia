@@ -9,7 +9,7 @@
 <!-- PWA -->
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
-<link rel="apple-touch-icon" href="icon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <meta name="theme-color" content="#fdfaf0" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#100e0a" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1056,7 +1056,6 @@
     // iPadOS 13+ se identifica como Mac — distinguir por soporte táctil
     const isIPadOS = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
     const isAppleTouch = isIOS || isIPadOS;
-    const isIOSSafari = isAppleTouch && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
     const isAndroid = /Android/.test(ua);
     const isMobileOrTablet = isAppleTouch || isAndroid;
 
@@ -1096,14 +1095,32 @@
     }
 
     function renderIOSInstructions() {
+      // SVG inline: icono de Compartir de iOS (cuadrado con flecha hacia arriba)
+      const shareIcon = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-parchment-700 dark:text-parchment-300" aria-hidden="true">
+          <path d="M12 3v13"/>
+          <path d="m7 8 5-5 5 5"/>
+          <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>
+        </svg>`;
+      const plusIcon = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-4 h-4 align-text-bottom mx-0.5 text-parchment-700 dark:text-parchment-300" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M12 8v8"/>
+          <path d="M8 12h8"/>
+        </svg>`;
       body.innerHTML = `
-        <div class="bg-parchment-100/60 dark:bg-ink-900/40 rounded-lg p-4 font-sans text-sm text-ink-600 dark:text-parchment-200 space-y-2">
-          <p>En iPhone/iPad con Safari:</p>
-          <ol class="list-decimal list-inside space-y-1 text-ink-500 dark:text-parchment-300">
-            <li>Toque el botón <strong>Compartir</strong> <span aria-hidden="true">􀈂</span> en la barra inferior.</li>
-            <li>Deslice y elija <strong>«Añadir a pantalla de inicio»</strong>.</li>
-            <li>Confirme con <strong>«Añadir»</strong>.</li>
+        <div class="bg-parchment-100/60 dark:bg-ink-900/40 rounded-lg p-4 font-sans text-sm text-ink-600 dark:text-parchment-200 space-y-3">
+          <p class="text-ink-700 dark:text-parchment-100">
+            Apple no permite instalarla con un solo toque. Siga estos tres pasos en <strong>Safari</strong>:
+          </p>
+          <ol class="list-decimal list-inside space-y-2 text-ink-600 dark:text-parchment-200 marker:text-parchment-600">
+            <li>Toque el botón ${shareIcon} <strong>Compartir</strong> (en la barra inferior de Safari).</li>
+            <li>Deslice y elija ${plusIcon} <strong>«Añadir a pantalla de inicio»</strong>.</li>
+            <li>Pulse <strong>«Añadir»</strong> en la esquina superior derecha.</li>
           </ol>
+          <p class="text-xs text-ink-400 dark:text-parchment-400 pt-1">
+            Si está usando Chrome, Firefox u otro navegador, abra esta página en <strong>Safari</strong> primero.
+          </p>
         </div>
       `;
     }
@@ -1138,10 +1155,10 @@
       if (e.key === 'Escape' && !modal.classList.contains('hidden')) hideModal();
     });
 
-    // iOS/iPadOS Safari no dispara beforeinstallprompt — mostrar instrucciones manualmente.
-    // En iOS con otros navegadores (Chrome, Firefox…) no se puede añadir a pantalla de inicio,
-    // así que no mostramos nada para no confundir al usuario.
-    if (isIOSSafari) {
+    // iOS/iPadOS no dispara beforeinstallprompt — Apple no expone API para instalar.
+    // Mostrar instrucciones manuales en cualquier navegador iOS (las propias instrucciones
+    // indican abrirla en Safari si el usuario está en Chrome/Firefox iOS).
+    if (isAppleTouch) {
       setTimeout(() => {
         renderIOSInstructions();
         showModal();
